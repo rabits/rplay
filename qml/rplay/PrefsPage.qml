@@ -44,4 +44,5 @@ Page {
         text: "It's prefs"
         onClicked: { screen.allowSwipe = !screen.allowSwipe }
     }
+
 }

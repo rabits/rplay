@@ -8,6 +8,6 @@ Page {
     Button {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "It's song"
+        text: "It's song ggggggggggggggggggggggggggggggggggggggg"
     }
 }
