@@ -10,6 +10,7 @@ Page {
         id: delegateItem
         Item {
             id: listItem
+            Component.onDestruction: console.log("DESTRUCTION: " + title.text)
 
             signal clicked
             property alias pressed: mouseArea.pressed
@@ -35,7 +36,7 @@ Page {
 
                     width: 50
                     height: 50
-                    source: model.picture ? model.picture : (model.type === 'file' ? "images/file.svg" : ( model.type === 'folder' ? "images/folder.svg" : 'images/album.svg') )
+                    source: model.picture ? model.picture : (model.type === 'album' ? "images/album.svg" : ( model.type === 'folder' ? "images/folder.svg" : "images/file.svg") )
                     fillMode: Image.PreserveAspectFit
                 }
 
@@ -77,18 +78,6 @@ Page {
                     }
 
                     Label {
-                        id: debug
-                        anchors {
-                            top: title.bottom
-                            left: type.right
-                            leftMargin: 10
-                        }
-                        text: parent.parent.parent.header
-                        font.pointSize: 14
-                        color: "#444"
-                    }
-
-                    Label {
                         id: inside
                         visible: model.inside ? true : false
                         anchors {
@@ -97,6 +86,20 @@ Page {
                             rightMargin: 10
                         }
                         text: model.inside ? model.inside : ""
+                        font.pointSize: 14
+                        color: "#444"
+                    }
+
+                    Label {
+                        id: path
+                        visible: false
+                        anchors {
+                            top: type.bottom
+                            left: parent.left
+                            right: parent.right
+                            leftMargin: 10
+                        }
+                        text: model.path
                         font.pointSize: 14
                         color: "#444"
                     }
@@ -116,14 +119,14 @@ Page {
 
                     ListView {
                         id: subList
+
                         anchors.fill: parent
                         delegate: delegateItem
-                        model: ListModel {
-                            id: subModel
-                        }
                         ScrollDecorator {
                             flickableItem: parent
                         }
+
+                        onInteractiveChanged: subList.model = ctree.treeContent(model.path)
                     }
                 }
 
@@ -159,7 +162,9 @@ Page {
                         listItem.clicked();
                         listItem.parent.parent.interactive = (listItem.parent.parent.interactive) ? false : true
                         listItem.state = (listItem.state === 'enlarged') ? '' : 'enlarged'
-                        subModel.append({ type: "folder", inside: 10, title: "Melodic Death Metal" })
+                        if( listItem.state === 'enlarged' ) {
+                            subList.model = ctree.treeContent(model.path)
+                        }
                     }
                 }
             }
@@ -171,14 +176,25 @@ Page {
                     PropertyChanges { target: title; elide: Text.ElideNone }
                     PropertyChanges { target: listItem.parent.parent; contentY: listItem.y }
                     PropertyChanges { target: additional; height: listItem.parent.parent.height - Math.max(picture.height, info.height); opacity: 1.0 }
+                    PropertyChanges { target: path; visible: true }
                 }
             ]
             transitions: [
                 Transition {
+                    to: "enlarged"
                     SequentialAnimation {
-                        PropertyAnimation { property: "visible"; duration: 0 }
-                        PropertyAnimation { properties: "elide, contentY"; duration: 100 }
+                        PropertyAnimation { properties: "visible, elide"; duration: 0 }
                         PropertyAnimation { properties: "height, width, visible, opacity"; duration: 200 }
+                        PropertyAnimation { properties: "contentY"; duration: 100 }
+                    }
+
+                },
+                Transition {
+                    from: "enlarged"
+                    SequentialAnimation {
+                        PropertyAnimation { property: "contentY"; duration: 100 }
+                        PropertyAnimation { properties: "height, width, visible, opacity"; duration: 200 }
+                        PropertyAnimation { properties: "visible, elide"; duration: 0 }
                     }
 
                 }
@@ -194,59 +210,8 @@ Page {
             id: rootList
             anchors.fill: parent
             delegate: delegateItem
-            model: ListModel {
-                ListElement { type: "folder"; inside: 10; title: "Melodic Death Metal" }
-                ListElement { type: "folder"; inside: 15; picture: "d"; title: "Death Metal" }
-                ListElement { type: "file"; title: "Brutal Death Metal" }
-                ListElement { type: "album"; inside: 1220020; title: "album" }
-                ListElement { type: "file"; picture: "f"; title: "ffffffffffffffffffffffffffffffffffffffffffffffffffffileasdasdasdasdasdasdasdasd" }
-                ListElement { type: "file"; picture: "f"; title: "file file file file file file file file file file file file file file file file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-                ListElement { type: "file"; picture: "f"; title: "file" }
-            }
+            onCacheBufferChanged: rootList.model = ctree.treeContent("")
+            model: ctree.treeContent("")
 
             ScrollDecorator {
                 flickableItem: parent

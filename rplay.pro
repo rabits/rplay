@@ -30,7 +30,10 @@ CONFIG += qdeclarative-boostable
 # CONFIG += qt-components
 
 # The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    src/ctree.cpp \
+    src/listmodel.cpp \
+    src/ctreeitem.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -45,6 +48,11 @@ OTHER_FILES += \
     qtc_packaging/debian_harmattan/compat \
     qtc_packaging/debian_harmattan/changelog \
     qml/rplay/MainPage.qml
+
+HEADERS += \
+    src/ctree.h \
+    src/listmodel.h \
+    src/ctreeitem.h
 
 
 
