@@ -1,3 +1,4 @@
+import ListModels 1.0
 import QtQuick 1.1
 import com.nokia.meego 1.0
 
@@ -11,6 +12,7 @@ Page {
         Item {
             id: listItem
             Component.onDestruction: console.log("DESTRUCTION: " + title.text)
+            Component.onCompleted: console.log("COMPLETED: " + title.text)
 
             signal clicked
             property alias pressed: mouseArea.pressed
@@ -125,8 +127,6 @@ Page {
                         ScrollDecorator {
                             flickableItem: parent
                         }
-
-                        onInteractiveChanged: subList.model = ctree.treeContent(model.path)
                     }
                 }
 
@@ -210,7 +210,6 @@ Page {
             id: rootList
             anchors.fill: parent
             delegate: delegateItem
-            onCacheBufferChanged: rootList.model = ctree.treeContent("")
             model: ctree.treeContent("")
 
             ScrollDecorator {

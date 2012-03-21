@@ -6,7 +6,7 @@ CTree::CTree(QSettings* settings, QObject *parent)
 {
 }
 
-QObject* CTree::treeContent(QString path)
+ListModel* CTree::treeContent(QString path)
 {
     ListModel* out = new ListModel(new CTreeItem(), parent());
     QDir dir = QDir(m_settings->value("ctree/root_music", QString(QDir::homePath())).toString() + path);

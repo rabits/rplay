@@ -16,7 +16,7 @@ private:
 
 public:
     explicit CTree(QSettings*, QObject *parent = 0);
-    Q_INVOKABLE QObject* treeContent(QString path = QString("/"));
+    Q_INVOKABLE ListModel* treeContent(QString path = QString("/"));
     
 signals:
     
