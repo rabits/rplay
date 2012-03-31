@@ -1,18 +1,16 @@
 #include <QtGui/QApplication>
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative>
-#include <QSettings>
 #include "qmlapplicationviewer.h"
 
-#include "src/ctree.h"
+#include "src/cplayer.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationName("Rabits");
     QCoreApplication::setOrganizationDomain("rabits.ru");
     QCoreApplication::setApplicationName("rplay");
-
-    QSettings settings;
+    QCoreApplication::setApplicationVersion("0.1.0");
 
     QScopedPointer<QApplication> app(createApplication(argc, argv));
 
@@ -21,10 +19,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QmlApplicationViewer viewer;
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 
-    CTree ctree(&settings);
-
     QDeclarativeContext* context = viewer.rootContext();
-    context->setContextProperty("ctree", &ctree);
+    context->setContextProperty("cplayer", CPlayer::getInstance());
+    context->setContextProperty("ctree", CPlayer::getInstance()->tree());
 
 
     viewer.setMainQmlFile(QLatin1String("qml/rplay/main.qml"));

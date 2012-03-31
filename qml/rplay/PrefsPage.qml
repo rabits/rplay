@@ -38,6 +38,16 @@ Page {
         color: "black"
     }
 
+    TextField {
+        id: s_root_music
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        text: cplayer.setting("ctree/root_music")
+    }
+
     Button {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
@@ -45,4 +55,7 @@ Page {
         onClicked: { screen.allowSwipe = !screen.allowSwipe }
     }
 
+    function saveSettings() {
+        cplayer.setting("ctree/root_music", s_root_music.text);
+    }
 }

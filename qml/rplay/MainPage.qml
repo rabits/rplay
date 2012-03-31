@@ -18,6 +18,10 @@ Page {
             PropertyChanges{ target: mainPage; pos.x: -mainPage.width }
         },
         State {
+            name: "prefsPage"
+            PropertyChanges{ target: mainPage; pos.y: -mainPage.height }
+        },
+        State {
             name: "changePage"
             PropertyChanges{ target: mainPage; pos.x: mainPage.x }
         }
@@ -42,6 +46,11 @@ Page {
 
         onClicked: {
             console.log("click")
+            if( prefsPage.state == "show" )
+            {
+                prefsPage.saveSettings()
+                treePage.redrawTree()
+            }
             prefsPage.state = (prefsPage.state == "show") ? "hide" : "show"
         }
 

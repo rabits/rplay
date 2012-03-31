@@ -11,8 +11,6 @@ Page {
         id: delegateItem
         Item {
             id: listItem
-            Component.onDestruction: console.log("DESTRUCTION: " + title.text)
-            Component.onCompleted: console.log("COMPLETED: " + title.text)
 
             signal clicked
             property alias pressed: mouseArea.pressed
@@ -102,7 +100,7 @@ Page {
                             leftMargin: 10
                         }
                         text: model.path
-                        font.pointSize: 14
+                        font.pointSize: 10
                         color: "#444"
                     }
                 }
@@ -159,11 +157,15 @@ Page {
                     }
 
                     onClicked: {
-                        listItem.clicked();
-                        listItem.parent.parent.interactive = (listItem.parent.parent.interactive) ? false : true
-                        listItem.state = (listItem.state === 'enlarged') ? '' : 'enlarged'
-                        if( listItem.state === 'enlarged' ) {
-                            subList.model = ctree.treeContent(model.path)
+                        if( model.type != 'file' ) {
+                            listItem.clicked();
+                            listItem.parent.parent.interactive = (listItem.parent.parent.interactive) ? false : true
+                            listItem.state = (listItem.state === 'enlarged') ? '' : 'enlarged'
+                            if( listItem.state === 'enlarged' ) {
+                                subList.model = ctree.treeContent(model.path)
+                            }
+                        } else {
+                            cplayer.playFile(model.path)
                         }
                     }
                 }
@@ -216,6 +218,9 @@ Page {
                 flickableItem: parent
             }
         }
+    }
 
+    function redrawTree() {
+        rootList.model = ctree.treeContent("")
     }
 }

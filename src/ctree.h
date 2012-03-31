@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QListData>
 #include <QDir>
-#include <QSettings>
 
 #include "ctreeitem.h"
 
@@ -12,11 +11,12 @@ class CTree : public QObject
 {
     Q_OBJECT
 private:
-    QSettings* m_settings;
 
 public:
-    explicit CTree(QSettings*, QObject *parent = 0);
+    explicit CTree(QObject *parent = 0);
     Q_INVOKABLE ListModel* treeContent(QString path = QString("/"));
+    QString findNextFile(QString path);
+    QString findFirstFile(QDir dir, QString prev_dir = QString());
     
 signals:
     
