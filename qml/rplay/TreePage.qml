@@ -36,7 +36,7 @@ Page {
 
                     width: 50
                     height: 50
-                    source: model.picture ? model.picture : (model.type === 'album' ? "images/album.svg" : ( model.type === 'folder' ? "images/folder.svg" : "images/file.svg") )
+                    source: model.picture ? model.picture : (model.type === 'album' ? "images/album.png" : ( model.type === 'folder' ? "images/folder.png" : "images/file.png") )
                     fillMode: Image.PreserveAspectFit
                 }
 

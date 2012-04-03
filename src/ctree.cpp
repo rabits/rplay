@@ -8,7 +8,7 @@ CTree::CTree(QObject *parent)
 
 QString CTree::findNextFile(QString path)
 {
-    QDir dir = QFileInfo(path).absoluteDir();
+    QDir dir = QFileInfo(CPlayer::getInstance()->setting("ctree/root_music").toString() + path).absoluteDir();
     qDebug("Find in dir:");
     qDebug(dir.absolutePath().toStdString().c_str());
 
@@ -20,7 +20,8 @@ QString CTree::findNextFile(QString path)
         if( fullpath == path )
         {
             if( (it+1) != list_files.constEnd() )
-                return dir.absolutePath() + "/" + *(it+1);
+                return dir.absolutePath().replace(CPlayer::getInstance()->setting("ctree/root_music").toString(), QString())
+                        + "/" + *(it+1);
         }
     }
     qDebug("Not found in current directory");
@@ -34,11 +35,11 @@ QString CTree::findNextFile(QString path)
         // Find next file in dirs upper then current
         QString output = findFirstFile(dir.absolutePath(), previous_dir);
         if( ! output.isEmpty() )
-            return output;
+            return output.replace(CPlayer::getInstance()->setting("ctree/root_music").toString(), QString());
     }
 
     // Find first file in root - looping
-    return findFirstFile(dir);
+    return findFirstFile(dir).replace(CPlayer::getInstance()->setting("ctree/root_music").toString(), QString());
 }
 
 QString CTree::findFirstFile(QDir dir, QString prev_dir)

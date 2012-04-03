@@ -18,6 +18,17 @@ CPlayer::CPlayer(QObject *parent)
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(statusChanged(QMediaPlayer::MediaStatus)));
 }
 
+void CPlayer::initContext(QmlApplicationViewer& viewer)
+{
+    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+
+    m_context = viewer.rootContext();
+    m_context->setContextProperty("cplayer", this);
+    m_context->setContextProperty("ctree", tree());
+    m_context->setContextProperty("current_file", currentFile());
+    m_context->setContextProperty("current_state", currentState());
+}
+
 QVariant CPlayer::setting(QString key, QString value)
 {
     qDebug("get value");
@@ -50,22 +61,45 @@ void CPlayer::statusChanged(QMediaPlayer::MediaStatus status)
 
 void CPlayer::playFile(QString path)
 {
-    m_current_file = CPlayer::getInstance()->setting("ctree/root_music").toString() + path;
+    if( setting("rplay/file").toString() != path )
+    {
+        setting("rplay/file", path);
+        m_player->setMedia(QUrl::fromLocalFile(setting("ctree/root_music").toString() + setting("rplay/file").toString()));
+        play();
 
-    m_player->setMedia(QUrl::fromLocalFile(m_current_file));
-    m_player->play();
-
-    qDebug("Playing file:");
-    qDebug(m_current_file.toStdString().c_str());
+        qDebug("Playing file:");
+        qDebug(setting("rplay/file").toString().toStdString().c_str());
+    }
+    else
+    {
+        if( setting("rplay/state").toString() == "playing" )
+            pause();
+        else
+            play();
+    }
 }
 
 void CPlayer::playNext()
 {
-    playFile(m_tree.findNextFile(m_current_file).replace(CPlayer::getInstance()->setting("ctree/root_music").toString(), QString()));
+    playFile(m_tree.findNextFile(setting("rplay/file").toString()));
 }
 
 void CPlayer::playPrev()
 {
+}
+
+void CPlayer::play()
+{
+    setting("rplay/state", "playing");
+
+    m_player->play();
+}
+
+void CPlayer::pause()
+{
+    setting("rplay/state", "pause");
+
+    m_player->pause();
 }
 
 CPlayer* CPlayer::s_pInstance = NULL;

@@ -3,7 +3,9 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QtDeclarative/QDeclarativeContext>
 #include <QtMultimediaKit/qmediaplayer.h>
+#include "qmlapplicationviewer.h"
 
 #include "src/ctree.h"
 
@@ -15,19 +17,21 @@ private:
 
     static CPlayer* s_pInstance;
 
+    QDeclarativeContext* m_context;
+
     QSettings   m_settings;
     CTree       m_tree;
 
     QStringList m_music_filters;
     QStringList m_cover_filters;
 
-    QMediaPlayer *m_player;
-
-    QString m_current_file;
+    QMediaPlayer*        m_player;
 
 public:
     inline static CPlayer* getInstance() { if( s_pInstance == NULL ) s_pInstance = new CPlayer(); return s_pInstance; }
     inline static void     destroyInstance() { delete s_pInstance; }
+
+    void initContext(QmlApplicationViewer& viewer);
 
     Q_INVOKABLE inline QSettings* settings() { return &m_settings; }
     Q_INVOKABLE QVariant setting(QString key, QString value = "");
@@ -36,9 +40,15 @@ public:
     Q_INVOKABLE inline QStringList* musicFilters() { return &m_music_filters; }
     Q_INVOKABLE inline QStringList* coverFilters() { return &m_cover_filters; }
 
+    Q_INVOKABLE inline QString currentFile() { return CPlayer::getInstance()->setting("rplay/file").toString(); }
+    Q_INVOKABLE inline QString currentState() { return CPlayer::getInstance()->setting("rplay/state").toString(); }
+
     Q_INVOKABLE void playFile(QString path);
     Q_INVOKABLE void playNext();
     Q_INVOKABLE void playPrev();
+
+    Q_INVOKABLE void play();
+    Q_INVOKABLE void pause();
     
 signals:
     

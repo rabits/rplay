@@ -1,5 +1,4 @@
 #include <QtGui/QApplication>
-#include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative>
 #include "qmlapplicationviewer.h"
 
@@ -17,12 +16,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     qmlRegisterType<ListModel>("ListModels", 1, 0, "ListModel");
 
     QmlApplicationViewer viewer;
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 
-    QDeclarativeContext* context = viewer.rootContext();
-    context->setContextProperty("cplayer", CPlayer::getInstance());
-    context->setContextProperty("ctree", CPlayer::getInstance()->tree());
-
+    CPlayer::getInstance()->initContext(viewer);
 
     viewer.setMainQmlFile(QLatin1String("qml/rplay/main.qml"));
     viewer.showExpanded();
