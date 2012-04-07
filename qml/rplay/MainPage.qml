@@ -1,3 +1,4 @@
+import ListModels 1.0
 import QtQuick 1.1
 import com.nokia.meego 1.0
 
@@ -10,16 +11,12 @@ Page {
             PropertyChanges{ target: mainPage; pos.x: 0 }
         },
         State {
-            name: "treePage"
+            name: "prefsPage"
             PropertyChanges{ target: mainPage; pos.x: mainPage.width }
         },
         State {
             name: "songPage"
             PropertyChanges{ target: mainPage; pos.x: -mainPage.width }
-        },
-        State {
-            name: "prefsPage"
-            PropertyChanges{ target: mainPage; pos.y: -mainPage.height }
         },
         State {
             name: "changePage"
@@ -36,143 +33,272 @@ Page {
         }
     ]
 
-    MouseArea {
-        id: pagesChanger
-        height: parent.height
-        width: parent.width * 3
-        anchors.centerIn: parent
+    Component {
+        id: delegateItem
+        Item {
+            id: listItem
+            objectName: model.path
 
-        property int clickPos: -1
+            signal clicked
+            property alias pressed: mouseArea.pressed
+            property int header: Math.max(picture.height, info.height) + 8
 
-        onClicked: {
-            console.log("click")
-            if( prefsPage.state == "show" )
-            {
-                prefsPage.saveSettings()
-                treePage.redrawTree()
+            height: container.height
+            width: parent.width
+
+            Rectangle {
+                id: container
+                color: "black"
+
+                height: Math.max(picture.height, info.height) + 8 + additional.height + border.height
+                width: parent.width
+
+                Image {
+                    id: picture
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        topMargin: 4
+                    }
+
+                    width: 50
+                    height: 50
+                    source: model.picture ? model.picture : (model.type === 'album' ? "images/album.png" : ( model.type === 'folder' ? "images/folder.png" : "images/file.png") )
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                Rectangle {
+                    id: info
+                    color: parent.color
+                    height: title.height + type.height
+                    anchors {
+                        left: picture.right
+                        right: parent.right
+                        topMargin: 4
+                        leftMargin: 5
+                    }
+
+                    Label {
+                        id: title
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            leftMargin: 5
+                        }
+                        text: model.title
+                        font.weight: Font.Bold
+                        font.pointSize: 20
+                        color: "gray"
+                        elide: Text.ElideRight
+                    }
+
+                    Label {
+                        id: type
+                        anchors {
+                            top: title.bottom
+                            left: parent.left
+                            leftMargin: 10
+                        }
+                        text: model.type
+                        font.pointSize: 14
+                        color: "#444"
+                    }
+
+                    Label {
+                        id: inside
+                        visible: model.inside ? true : false
+                        anchors {
+                            top: title.bottom
+                            right: parent.right
+                            rightMargin: 10
+                        }
+                        text: model.inside ? model.inside : ""
+                        font.pointSize: 14
+                        color: "#444"
+                    }
+
+                    Label {
+                        id: path
+                        visible: false
+                        anchors {
+                            top: type.bottom
+                            left: parent.left
+                            right: parent.right
+                            leftMargin: 10
+                        }
+                        text: model.path
+                        font.pointSize: 10
+                        color: "#444"
+                    }
+                }
+                Rectangle {
+                    id: additional
+                    color: parent.color
+                    clip: true
+                    opacity: 0.0
+                    height: 0
+                    anchors {
+                        top: (picture.height > info.height) ? picture.bottom : info.bottom
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: 20
+                    }
+
+                    ListView {
+                        id: subList
+                        objectName: "subList"
+
+                        anchors.fill: parent
+                        delegate: delegateItem
+                        ScrollDecorator {
+                            flickableItem: parent
+                        }
+                    }
+                }
+
+                Rectangle {
+                    radius: 5.0
+                    anchors.fill: parent
+                    color: "white"
+                    opacity: 0.1
+                    visible: mouseArea.pressed
+                }
+
+                Rectangle {
+                    id: border
+                    height: 1
+                    color: "#444"
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        bottom: parent.bottom
+                    }
+                }
+
+                MouseArea {
+                    id: mouseArea;
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                        bottom: additional.top
+                    }
+
+                    onClicked: {
+                        if( model.type != 'file' ) {
+                            listItem.clicked();
+                            listItem.parent.parent.interactive = (listItem.parent.parent.interactive) ? false : true
+                            listItem.state = (listItem.state === 'enlarged') ? '' : 'enlarged'
+                            if( listItem.state === 'enlarged' ) {
+                                subList.model = ctree.treeContent(model.path)
+                            }
+                        } else {
+                            cplayer.playFile(model.path)
+                        }
+                    }
+
+                    property int clickPos: -1
+
+                    /*onClicked: {
+                        console.log("click")
+                        if( prefsPage.state == "show" )
+                        {
+                            prefsPage.saveSettings()
+                            redrawTree()
+                        }
+                        prefsPage.state = (prefsPage.state == "show") ? "hide" : "show"
+                    }*/
+
+                    onPressed: {
+                        clickPos = mouseX
+                    }
+
+                    onMousePositionChanged: {
+                        mainPage.state = 'changePage'
+                        mainPage.pos.x += mouseX - clickPos
+                    }
+
+                    onReleased: {
+                        if (mainPage.pos.x > (mainPage.width / 2)) {
+                            mainPage.state = 'prefsPage'
+                        }
+                        else if (mainPage.pos.x < -(mainPage.width / 2)) {
+                            mainPage.state = 'songPage'
+                        }
+                        else if (mainPage.state != "prefsPage")
+                            mainPage.state = 'mainPage'
+                    }
+                }
             }
-            prefsPage.state = (prefsPage.state == "show") ? "hide" : "show"
-        }
 
-        onPressed: {
-            clickPos = mouseX
-        }
-
-        onMousePositionChanged: {
-            parent.state = 'changePage'
-            parent.pos.x += mouseX - clickPos
-        }
-
-        onReleased: {
-            if (parent.pos.x > (parent.width / 2)) {
-                parent.state = 'treePage'
+            function select() {
+                console.log("Selected: " + model.path)
+                container.color = "gray"
             }
-            else if (parent.pos.x < -(parent.width / 2)) {
-                parent.state = 'songPage'
+
+            function deselect() {
+                console.log("Deselected: " + model.path)
+                container.color = "black"
             }
-            else if (parent.state != "prefsPage")
-                parent.state = 'mainPage'
+
+            states: [
+                State {
+                    name: "enlarged"
+                    PropertyChanges { target: picture; height: 150; width: 150 }
+                    PropertyChanges { target: title; elide: Text.ElideNone }
+                    PropertyChanges { target: listItem.parent.parent; contentY: listItem.y }
+                    PropertyChanges { target: additional; height: listItem.parent.parent.height - Math.max(picture.height, info.height); opacity: 1.0 }
+                    PropertyChanges { target: path; visible: true }
+                }
+            ]
+            transitions: [
+                Transition {
+                    to: "enlarged"
+                    SequentialAnimation {
+                        PropertyAnimation { properties: "visible, elide"; duration: 0 }
+                        PropertyAnimation { properties: "height, width, visible, opacity"; duration: 200 }
+                        PropertyAnimation { properties: "contentY"; duration: 100 }
+                    }
+
+                },
+                Transition {
+                    from: "enlarged"
+                    SequentialAnimation {
+                        PropertyAnimation { property: "contentY"; duration: 100 }
+                        PropertyAnimation { properties: "height, width, visible, opacity"; duration: 200 }
+                        PropertyAnimation { properties: "visible, elide"; duration: 0 }
+                    }
+
+                }
+            ]
         }
     }
 
-    TreePage {
-        id: treePage
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+
+        ListView {
+            id: rootList
+            objectName: "rootList"
+            anchors.fill: parent
+            delegate: delegateItem
+            model: ctree.treeContent("")
+
+            ScrollDecorator {
+                flickableItem: parent
+            }
+        }
+    }
+
+    function redrawTree() {
+        rootList.model = ctree.treeContent("")
+    }
+
+    PrefsPage {
+        id: prefsPage
     }
     SongPage {
         id: songPage
-    }
-
-    Rectangle {
-        id: coverImage
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            top: parent.top
-            margins: 40
-        }
-        width: parent.width - 40
-        height: parent.width - 40
-        color: "#770000"
-    }
-
-    Rectangle {
-        id: slider
-        width: parent.width
-        height: 60
-        color: "#0000aa"
-        anchors {
-            top: coverImage.bottom
-            topMargin: 20
-        }
-        ProgressBar {
-            width: parent.width
-        }
-    }
-
-    Rectangle {
-        id: toolbarPlayer
-        width: parent.width
-        color: "#00aa00"
-        anchors {
-            top: slider.bottom
-            bottom: parent.bottom
-            topMargin: 20
-        }
-
-        Row {
-            width: parent.width
-            height: parent.height
-            Button {
-                width: parent.width / 3
-                height: parent.height
-                ToolIcon {
-                    anchors {
-                        horizontalCenter: parent.horizontalCenter
-                        verticalCenter: parent.verticalCenter
-                    }
-                    iconId: "toolbar-mediacontrol-backwards"
-                }
-            }
-            Button {
-                width: parent.width / 3
-                height: parent.height
-                onClicked: { theme.inverted = !theme.inverted }
-                ToolIcon {
-                    anchors {
-                        horizontalCenter: parent.horizontalCenter
-                        verticalCenter: parent.verticalCenter
-                    }
-                    iconId: "toolbar-mediacontrol-pause"
-                }
-            }
-            Button {
-                width: parent.width / 3
-                height: parent.height
-                ToolIcon {
-                    anchors {
-                        horizontalCenter: parent.horizontalCenter
-                        verticalCenter: parent.verticalCenter
-                    }
-                    iconId: "toolbar-mediacontrol-forward"
-                }
-            }
-        }
-    }
-
-    Label {
-        id: label
-        text: "empty"
-    }
-    Label {
-        anchors.top: label.bottom
-        id: label1
-        text: "empty"
-    }
-    Label {
-        anchors.top: label1.bottom
-        id: label2
-        text: "empty2"
-    }
-    PrefsPage {
-        id: prefsPage
     }
 }

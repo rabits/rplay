@@ -8,10 +8,8 @@ CTree::CTree(QObject *parent)
 
 QString CTree::findNextFile(QString path)
 {
-    QDir dir = QFileInfo(CPlayer::getInstance()->setting("ctree/root_music").toString() + path).absoluteDir();
-    qDebug("Find in dir:");
-    qDebug(dir.absolutePath().toStdString().c_str());
-
+    path = CPlayer::getInstance()->setting("ctree/root_music").toString() + path;
+    QDir dir = QFileInfo(path).absoluteDir();
     // Find in current directory
     QStringList list_files = dir.entryList(*(CPlayer::getInstance()->musicFilters()), QDir::Files);
     for( QStringList::const_iterator it = list_files.constBegin(); it != list_files.constEnd(); ++it )
@@ -24,7 +22,6 @@ QString CTree::findNextFile(QString path)
                         + "/" + *(it+1);
         }
     }
-    qDebug("Not found in current directory");
 
     while( CPlayer::getInstance()->setting("ctree/root_music").toString() != dir.absolutePath() )
     {
@@ -44,12 +41,6 @@ QString CTree::findNextFile(QString path)
 
 QString CTree::findFirstFile(QDir dir, QString prev_dir)
 {
-    qDebug("");
-    qDebug("Find in dir:");
-    qDebug(dir.absolutePath().toStdString().c_str());
-    qDebug(" with prev_dir:");
-    qDebug(prev_dir.toStdString().c_str());
-
     // Going to directories
     QStringList list_dirs = dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs);
 
@@ -64,13 +55,11 @@ QString CTree::findFirstFile(QDir dir, QString prev_dir)
             QString fullpath = dir.absolutePath() + "/" + *it;
             if( fullpath == prev_dir )
             {
-                qDebug(" Currdir found");
                 // We found currentdir - try to use next dirs
                 if( (it+1) != list_dirs.constEnd() )
                 {
                     for( ++it ; it != list_dirs.constEnd(); ++it )
                     {
-                        qDebug(" Find first file...");
                         QString next_in_folder = findFirstFile(dir.absolutePath() + "/" + *it);
                         if( ! next_in_folder.isEmpty() )
                             return next_in_folder;

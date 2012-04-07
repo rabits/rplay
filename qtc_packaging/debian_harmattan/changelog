@@ -1,3 +1,16 @@
+rplay (0.2.0) unstable; urgency=low
+
+  * Implemented HW keys
+  * Added new icon
+  * Removed old main window
+
+ -- psa <psa@psabook>  Sat, 07 Apr 2012 12:21:38 +0400
+
+rplay (0.1.0) unstable; urgency=low
+  * Now player can recursive play and pause music
+
+ -- psa <psa@psabook>  Tue, 03 Apr 2012 13:31:44 +0400
+
 rplay (0.0.1) unstable; urgency=low
 
   * Initial Release.

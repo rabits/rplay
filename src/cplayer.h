@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QSettings>
 #include <QtDeclarative/QDeclarativeContext>
+#include <QGraphicsObject>
 #include <QtMultimediaKit/qmediaplayer.h>
+#include <qmsystem2/qmkeys.h>
 #include "qmlapplicationviewer.h"
 
 #include "src/ctree.h"
@@ -17,10 +19,13 @@ private:
 
     static CPlayer* s_pInstance;
 
+    QGraphicsObject*     m_root_object;
     QDeclarativeContext* m_context;
 
     QSettings   m_settings;
     CTree       m_tree;
+
+    MeeGo::QmKeys* m_hwkeys;
 
     QStringList m_music_filters;
     QStringList m_cover_filters;
@@ -32,6 +37,7 @@ public:
     inline static void     destroyInstance() { delete s_pInstance; }
 
     void initContext(QmlApplicationViewer& viewer);
+    void initRoot(QmlApplicationViewer& viewer);
 
     Q_INVOKABLE inline QSettings* settings() { return &m_settings; }
     Q_INVOKABLE QVariant setting(QString key, QString value = "");
@@ -54,6 +60,7 @@ signals:
     
 public slots:
     void statusChanged(QMediaPlayer::MediaStatus status);
+    void hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state);
     
 };
 
