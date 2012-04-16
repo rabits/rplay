@@ -23,11 +23,10 @@ CPlayer::CPlayer(QObject *parent)
     // Create player
     m_player = new QMediaPlayer(this);
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(statusChanged(QMediaPlayer::MediaStatus)));
-    // Restore previous state
+
+    // Restore previous playing file
     if( ! setting("rplay/file").isNull() )
         m_player->setMedia(QUrl::fromLocalFile(setting("ctree/root_music").toString() + setting("rplay/file").toString()));
-    if( setting("rplay/state").toString() == "playing" )
-        play();
 }
 
 void CPlayer::initContext(QmlApplicationViewer& viewer)
@@ -39,7 +38,7 @@ void CPlayer::initContext(QmlApplicationViewer& viewer)
     m_context->setContextProperty("cplayer", this);
     m_context->setContextProperty("ctree", tree());
     m_context->setContextProperty("current_file", currentFile());
-    m_context->setContextProperty("current_state", currentState());
+    m_context->setContextProperty("current_file_array", currentFileArray());
 }
 
 void CPlayer::initRoot(QmlApplicationViewer& viewer)
@@ -86,31 +85,13 @@ void CPlayer::playFile(QString path)
     }
     else
     {
-        if( setting("rplay/state").toString() == "playing" )
+        if( m_player->state() == QMediaPlayer::PlayingState )
             pause();
         else
             play();
     }
 
-    QObject* root_list = m_root_object->findChild<QObject *>("rootList");
-    QDeclarativeItem* content_item = qvariant_cast<QDeclarativeItem*>(root_list->property("contentItem"));
-
-    foreach( QGraphicsItem* item, content_item->childItems() )
-    {
-        if( qobject_cast<QDeclarativeItem*>(item)->objectName() == "/group" )
-            qDebug("Found /group");
-    }
-/*
-    QObject* item = items.first();
-    QVariant returned_value;
-    if( item )
-        QMetaObject::invokeMethod(item, "select", Q_RETURN_ARG(QVariant, returned_value));
-    else
-    {
-        qDebug("Object not found");
-        qDebug(path.toStdString().c_str());
-    }
-    */
+    m_context->setContextProperty("current_file_array", currentFileArray());
 }
 
 void CPlayer::playNext()
@@ -146,7 +127,7 @@ void CPlayer::hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state)
             playNext();
             break;
         case MeeGo::QmKeys::PlayPause :
-            if( setting("rplay/state").toString() == "playing" )
+            if( m_player->state() == QMediaPlayer::PlayingState )
                 pause();
             else
                 play();
@@ -156,6 +137,25 @@ void CPlayer::hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state)
             break;
         case MeeGo::QmKeys::Pause :
             pause();
+            break;
+        case MeeGo::QmKeys::UnknownKey :
+        case MeeGo::QmKeys::KeyboardSlider :
+        case MeeGo::QmKeys::Camera :
+        case MeeGo::QmKeys::VolumeUp :
+        case MeeGo::QmKeys::VolumeDown :
+        case MeeGo::QmKeys::Phone :
+        case MeeGo::QmKeys::Stop :
+        case MeeGo::QmKeys::Forward :
+        case MeeGo::QmKeys::Rewind :
+        case MeeGo::QmKeys::Mute :
+        case MeeGo::QmKeys::LeftKey :
+        case MeeGo::QmKeys::RightKey :
+        case MeeGo::QmKeys::UpKey :
+        case MeeGo::QmKeys::DownKey :
+        case MeeGo::QmKeys::End :
+        case MeeGo::QmKeys::PreviousSong :
+        case MeeGo::QmKeys::RightCtrl :
+        case MeeGo::QmKeys::PowerKey :
             break;
         }
     }

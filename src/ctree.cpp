@@ -81,6 +81,7 @@ ListModel* CTree::treeContent(QString path)
 {
     ListModel* out = new ListModel(new CTreeItem(), parent());
     QDir dir = QDir(CPlayer::getInstance()->setting("ctree/root_music").toString() + path);
+    int level = path.split('/').count();
 
     QStringList list_dirs = dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs);
     QStringList list_files = dir.entryList(*(CPlayer::getInstance()->musicFilters()), QDir::Files);
@@ -95,6 +96,7 @@ ListModel* CTree::treeContent(QString path)
         out->appendRow(new CTreeItem(*it, path + "/" + *it
                                     , (num_files ? QString("album") : QString("folder"))
                                     , cover_list.isEmpty() ? "" : dir.path() + "/" + cover_list.first()
+                                    , level
                                     , num_files + num_dirs
                                     , this));
         dir.cdUp();
@@ -102,7 +104,7 @@ ListModel* CTree::treeContent(QString path)
 
     for( QStringList::const_iterator it = list_files.constBegin(); it != list_files.constEnd(); ++it )
     {
-        out->appendRow(new CTreeItem(*it, path + "/" + *it, QString("file"), "", 0, this));
+        out->appendRow(new CTreeItem(*it, path + "/" + *it, QString("file"), "", level, 0, this));
     }
 
     return out;

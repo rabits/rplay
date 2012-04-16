@@ -53,6 +53,18 @@ Page {
                 height: Math.max(picture.height, info.height) + 8 + additional.height + border.height
                 width: parent.width
 
+                Rectangle {
+                    id: header
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                        bottom: additional.top
+                    }
+
+                    color: (current_file_array[model.level] == model.title) ? "#222" : parent.color
+                }
+
                 Image {
                     id: picture
                     anchors {
@@ -69,7 +81,7 @@ Page {
 
                 Rectangle {
                     id: info
-                    color: parent.color
+                    color: header.color
                     height: title.height + type.height
                     anchors {
                         left: picture.right
@@ -131,6 +143,7 @@ Page {
                         color: "#444"
                     }
                 }
+
                 Rectangle {
                     id: additional
                     color: parent.color

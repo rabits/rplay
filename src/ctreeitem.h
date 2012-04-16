@@ -14,16 +14,18 @@ public:
         PathRole,
         TypeRole,
         PictureRole,
+        LevelRole,
         InsideRole
     };
 
     CTreeItem(QObject *parent = 0);
-    explicit CTreeItem(const QString&, QString, QString, QString, int, QObject *parent = 0);
+    explicit CTreeItem(const QString&, QString, QString, QString, int, int, QObject *parent = 0);
 
     inline QString title() const { return m_title; }
     inline QString path() const { return m_path; }
     inline QString type() const { return m_type; }
     inline QString picture() const { return m_picture; }
+    inline qint8 level() const { return m_level; }
     inline qint8 inside() const { return m_inside; }
 
     inline QString id() const { return m_path; }
@@ -35,6 +37,7 @@ private:
     QString m_path;
     QString m_type;
     QString m_picture;
+    qint8   m_level;
     qint8   m_inside;
     
 signals:

@@ -7,6 +7,7 @@
 #include <QGraphicsObject>
 #include <QtMultimediaKit/qmediaplayer.h>
 #include <qmsystem2/qmkeys.h>
+
 #include "qmlapplicationviewer.h"
 
 #include "src/ctree.h"
@@ -47,6 +48,7 @@ public:
     Q_INVOKABLE inline QStringList* coverFilters() { return &m_cover_filters; }
 
     Q_INVOKABLE inline QString currentFile() { return CPlayer::getInstance()->setting("rplay/file").toString(); }
+    Q_INVOKABLE inline QStringList currentFileArray() { return CPlayer::getInstance()->setting("rplay/file").toString().split('/'); }
     Q_INVOKABLE inline QString currentState() { return CPlayer::getInstance()->setting("rplay/state").toString(); }
 
     Q_INVOKABLE void playFile(QString path);
