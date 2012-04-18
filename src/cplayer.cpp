@@ -5,7 +5,9 @@ CPlayer::CPlayer(QObject *parent)
     : QObject(parent)
     , m_settings()
     , m_tree()
+#if defined(MEEGO_EDITION_HARMATTAN)
     , m_hwkeys()
+#endif
 {
     // Set default settings
     if( m_settings.value("ctree/root_music").isNull() )
@@ -15,10 +17,12 @@ CPlayer::CPlayer(QObject *parent)
     m_music_filters << "*.wav" << "*.mp3" << "*.ogg" << "*.flac";
     m_cover_filters << "cover.jpg" << "cover.jpeg" << "cover.png" << "folder.jpg" << "folder.jpeg" << "folder.png";
 
+#if defined(MEEGO_EDITION_HARMATTAN)
     // Catch media keys events
     m_hwkeys = new MeeGo::QmKeys(this);
     connect(m_hwkeys, SIGNAL(keyEvent (MeeGo::QmKeys::Key, MeeGo::QmKeys::State)),
             this, SLOT(hwKeyEvent (MeeGo::QmKeys::Key, MeeGo::QmKeys::State)) );
+#endif
 
     // Create player
     m_player = new QMediaPlayer(this);
@@ -117,6 +121,7 @@ void CPlayer::pause()
     m_player->pause();
 }
 
+#if defined(MEEGO_EDITION_HARMATTAN)
 void CPlayer::hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state)
 {
     if( state == MeeGo::QmKeys::KeyUp )
@@ -160,5 +165,6 @@ void CPlayer::hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state)
         }
     }
 }
+#endif
 
 CPlayer* CPlayer::s_pInstance = NULL;

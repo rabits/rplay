@@ -41,7 +41,9 @@ Page {
 
             signal clicked
             property alias pressed: mouseArea.pressed
-            property int header: Math.max(picture.height, info.height) + 8
+            property variant parent_list: parent.parent
+            property variant parent_item: parent_list.parent.parent.parent
+            property int head_height: Math.max(picture.height, info.height)
 
             height: container.height
             width: parent.width
@@ -50,7 +52,7 @@ Page {
                 id: container
                 color: "black"
 
-                height: Math.max(picture.height, info.height) + 8 + additional.height + border.height
+                height: listItem.head_height + additional.height + border.height
                 width: parent.width
 
                 Rectangle {
@@ -99,7 +101,7 @@ Page {
                         }
                         text: model.title
                         font.weight: Font.Bold
-                        font.pointSize: 20
+                        font.pointSize: 8.0
                         color: "gray"
                         elide: Text.ElideRight
                     }
@@ -139,8 +141,9 @@ Page {
                             leftMargin: 10
                         }
                         text: model.path
-                        font.pointSize: 10
+                        font.pointSize: 1.0
                         color: "#444"
+                        elide: Text.ElideLeft
                     }
                 }
 
@@ -154,7 +157,7 @@ Page {
                         top: (picture.height > info.height) ? picture.bottom : info.bottom
                         left: parent.left
                         right: parent.right
-                        leftMargin: 20
+                        leftMargin: (model.level < 7) ? 5 : 0
                     }
 
                     ListView {
@@ -198,11 +201,14 @@ Page {
                     }
 
                     onClicked: {
-                        if( model.type != 'file' ) {
+                        if( model.type !== 'file' ) {
+                            var do_state = 'enlarged'
+                            if( model.level < 2 )
+                                do_state = 'enlargedRoot'
                             listItem.clicked();
-                            listItem.parent.parent.interactive = (listItem.parent.parent.interactive) ? false : true
-                            listItem.state = (listItem.state === 'enlarged') ? '' : 'enlarged'
-                            if( listItem.state === 'enlarged' ) {
+                            listItem.parent_list.interactive = (listItem.parent_list.interactive) ? false : true
+                            listItem.state = (listItem.state === do_state) ? '' : do_state
+                            if( listItem.state === do_state ) {
                                 subList.model = ctree.treeContent(model.path)
                             }
                         } else {
@@ -256,30 +262,29 @@ Page {
 
             states: [
                 State {
-                    name: "enlarged"
+                    name: "enlargedRoot"
                     PropertyChanges { target: picture; height: 150; width: 150 }
-                    PropertyChanges { target: title; elide: Text.ElideNone }
-                    PropertyChanges { target: listItem.parent.parent; contentY: listItem.y }
-                    PropertyChanges { target: additional; height: listItem.parent.parent.height - Math.max(picture.height, info.height); opacity: 1.0 }
+                    PropertyChanges { target: listItem.parent_list; contentY: listItem.y }
+                    PropertyChanges { target: additional; height: listItem.parent_list.height - listItem.head_height; opacity: 1.0 }
                     PropertyChanges { target: path; visible: true }
+                },
+                State {
+                    name: "enlarged"
+                    extend: "enlargedRoot"
+                    PropertyChanges {
+                        target: listItem.parent_item.parent_list;
+                        contentY: listItem.parent_item.y + listItem.parent_item.head_height + 4
+                    }
+                    PropertyChanges { target: listItem.parent_list.parent; height: mainPage.height + 4; }
                 }
             ]
             transitions: [
                 Transition {
-                    to: "enlarged"
+                    reversible: true
                     SequentialAnimation {
                         PropertyAnimation { properties: "visible, elide"; duration: 0 }
                         PropertyAnimation { properties: "height, width, visible, opacity"; duration: 200 }
                         PropertyAnimation { properties: "contentY"; duration: 100 }
-                    }
-
-                },
-                Transition {
-                    from: "enlarged"
-                    SequentialAnimation {
-                        PropertyAnimation { property: "contentY"; duration: 100 }
-                        PropertyAnimation { properties: "height, width, visible, opacity"; duration: 200 }
-                        PropertyAnimation { properties: "visible, elide"; duration: 0 }
                     }
 
                 }

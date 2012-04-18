@@ -6,7 +6,9 @@
 #include <QtDeclarative/QDeclarativeContext>
 #include <QGraphicsObject>
 #include <QtMultimediaKit/qmediaplayer.h>
-#include <qmsystem2/qmkeys.h>
+#if defined(MEEGO_EDITION_HARMATTAN)
+    #include <qmsystem2/qmkeys.h>
+#endif
 
 #include "qmlapplicationviewer.h"
 
@@ -26,7 +28,9 @@ private:
     QSettings   m_settings;
     CTree       m_tree;
 
+#if defined(MEEGO_EDITION_HARMATTAN)
     MeeGo::QmKeys* m_hwkeys;
+#endif
 
     QStringList m_music_filters;
     QStringList m_cover_filters;
@@ -62,7 +66,9 @@ signals:
     
 public slots:
     void statusChanged(QMediaPlayer::MediaStatus status);
+#if defined(MEEGO_EDITION_HARMATTAN)
     void hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state);
+#endif
     
 };
 
