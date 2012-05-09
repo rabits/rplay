@@ -5,6 +5,8 @@ import com.nokia.meego 1.0
 Page {
     id: mainPage
 
+    orientationLock: PageOrientation.LockPortrait
+
     states: [
         State {
             name: "mainPage"
@@ -43,29 +45,18 @@ Page {
             property alias pressed: mouseArea.pressed
             property variant parent_list: parent.parent
             property variant parent_item: parent_list.parent.parent.parent
-            property int head_height: Math.max(picture.height, info.height)
+            property int head_height: Math.max(picture.height, info.height) + 8
+            property color active: (current_file_array[model.level] == model.title) ? "#55ffffff" : "transparent"
 
             height: container.height
             width: parent.width
 
             Rectangle {
                 id: container
-                color: "black"
+                color: "transparent"
 
                 height: listItem.head_height + additional.height + border.height
                 width: parent.width
-
-                Rectangle {
-                    id: header
-                    anchors {
-                        top: parent.top
-                        left: parent.left
-                        right: parent.right
-                        bottom: additional.top
-                    }
-
-                    color: (current_file_array[model.level] == model.title) ? "#222" : parent.color
-                }
 
                 Image {
                     id: picture
@@ -81,15 +72,15 @@ Page {
                     fillMode: Image.PreserveAspectFit
                 }
 
-                Rectangle {
+                Item {
                     id: info
-                    color: header.color
                     height: title.height + type.height
                     anchors {
                         left: picture.right
                         right: parent.right
                         topMargin: 4
                         leftMargin: 5
+                        bottomMargin: 4
                     }
 
                     Label {
@@ -100,8 +91,11 @@ Page {
                             leftMargin: 5
                         }
                         text: model.title
-                        font.weight: Font.Bold
-                        font.pointSize: 8.0
+                        font {
+                            weight: Font.Bold
+                            pixelSize: 0
+                            pointSize: 16
+                        }
                         color: "gray"
                         elide: Text.ElideRight
                     }
@@ -114,7 +108,10 @@ Page {
                             leftMargin: 10
                         }
                         text: model.type
-                        font.pointSize: 14
+                        font {
+                            pixelSize: 0
+                            pointSize: 12
+                        }
                         color: "#444"
                     }
 
@@ -127,7 +124,10 @@ Page {
                             rightMargin: 10
                         }
                         text: model.inside ? model.inside : ""
-                        font.pointSize: 14
+                        font {
+                            pixelSize: 0
+                            pointSize: 12
+                        }
                         color: "#444"
                     }
 
@@ -141,15 +141,36 @@ Page {
                             leftMargin: 10
                         }
                         text: model.path
-                        font.pointSize: 1.0
-                        color: "#444"
-                        elide: Text.ElideLeft
+                        font {
+                            pixelSize: 0
+                            pointSize: 10
+                        }
+                        color: "#777"
+                    }
+                }
+
+                Rectangle {
+                    id: header
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                        bottom: additional.top
+                        bottomMargin: -4
+                    }
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: "transparent" }
+                        GradientStop { position: 0.05; color: listItem.active }
+                        GradientStop { position: 0.3; color: "transparent" }
+                        GradientStop { position: 0.7; color: "transparent" }
+                        GradientStop { position: 0.95; color: listItem.active }
+                        GradientStop { position: 1.0; color: "transparent" }
                     }
                 }
 
                 Rectangle {
                     id: additional
-                    color: parent.color
+                    color: "transparent"
                     clip: true
                     opacity: 0.0
                     height: 0
@@ -157,6 +178,7 @@ Page {
                         top: (picture.height > info.height) ? picture.bottom : info.bottom
                         left: parent.left
                         right: parent.right
+                        topMargin: 4
                         leftMargin: (model.level < 7) ? 5 : 0
                     }
 
@@ -216,25 +238,44 @@ Page {
                         }
                     }
 
-                    property int clickPos: -1
+                    /*property int pressPosX
+                    property int pressPosY
 
-                    /*onClicked: {
-                        console.log("click")
-                        if( prefsPage.state == "show" )
-                        {
-                            prefsPage.saveSettings()
-                            redrawTree()
-                        }
-                        prefsPage.state = (prefsPage.state == "show") ? "hide" : "show"
-                    }*/
+                    property bool vertical_swipe: 0
+                    property bool horizontal_swipe: 0
+
+                    //onClicked: {
+                    //    console.log("click")
+                    //    if( prefsPage.state == "show" )
+                    //    {
+                    //        prefsPage.saveSettings()
+                    //        redrawTree()
+                    //    }
+                    //    prefsPage.state = (prefsPage.state == "show") ? "hide" : "show"
+                    //}
 
                     onPressed: {
-                        clickPos = mouseX
+                        pressPosX = mouseX
+                        pressPosY = mouseY
                     }
 
                     onMousePositionChanged: {
-                        mainPage.state = 'changePage'
-                        mainPage.pos.x += mouseX - clickPos
+                        pressPosX =
+                        pressPosY = mouseY
+
+                        if( vertical_swipe ) {
+                            mainPage.pos.x += mouseX - clickPos
+                        }
+                        else if( ! (horizontal_swipe || vertical_swipe) ) {
+                            if( pressPosX - mouseX > vertical_swipe + 20 ) {
+                                horizontal_swipe = true
+                            }
+                            else if( vertical_swipe > horizontal_swipe + 20 ) {
+                                vertical_swipe = true
+                                mainPage.state = 'changePage'
+                                listItem.parent_list.interactive = false
+                            }
+                        }
                     }
 
                     onReleased: {
@@ -246,18 +287,14 @@ Page {
                         }
                         else if (mainPage.state != "prefsPage")
                             mainPage.state = 'mainPage'
-                    }
+
+                        if (vertical_swipe) {
+                            listItem.parent_list.interactive = true
+                            vertical_swipe = false
+                        }
+                        horizontal_swipe = false
+                    }*/
                 }
-            }
-
-            function select() {
-                console.log("Selected: " + model.path)
-                container.color = "gray"
-            }
-
-            function deselect() {
-                console.log("Deselected: " + model.path)
-                container.color = "black"
             }
 
             states: [
@@ -273,20 +310,31 @@ Page {
                     extend: "enlargedRoot"
                     PropertyChanges {
                         target: listItem.parent_item.parent_list;
-                        contentY: listItem.parent_item.y + listItem.parent_item.head_height + 4
+                        contentY: listItem.parent_item.y + listItem.parent_item.head_height + 1
                     }
-                    PropertyChanges { target: listItem.parent_list.parent; height: mainPage.height + 4; }
+                    PropertyChanges { target: listItem.parent_list.parent; height: mainPage.height + 1 }
                 }
             ]
             transitions: [
                 Transition {
+                    from: ""
+                    to: "enlarged"
                     reversible: true
                     SequentialAnimation {
                         PropertyAnimation { properties: "visible, elide"; duration: 0 }
                         PropertyAnimation { properties: "height, width, visible, opacity"; duration: 200 }
                         PropertyAnimation { properties: "contentY"; duration: 100 }
                     }
-
+                },
+                Transition {
+                    from: ""
+                    to: "enlargedRoot"
+                    reversible: true
+                    SequentialAnimation {
+                        PropertyAnimation { properties: "visible, elide"; duration: 0 }
+                        PropertyAnimation { properties: "height, width, visible, opacity"; duration: 200 }
+                        PropertyAnimation { properties: "contentY"; duration: 100 }
+                    }
                 }
             ]
         }
@@ -294,7 +342,11 @@ Page {
 
     Rectangle {
         anchors.fill: parent
-        color: "black"
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "black" }
+            GradientStop { position: 0.98; color: "#050505" }
+            GradientStop { position: 1.0; color: "black" }
+        }
 
         ListView {
             id: rootList

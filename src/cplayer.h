@@ -6,6 +6,9 @@
 #include <QtDeclarative/QDeclarativeContext>
 #include <QGraphicsObject>
 #include <QtMultimediaKit/qmediaplayer.h>
+
+#include <qplatformdefs.h> // MEEGO_EDITION_HARMATTAN
+
 #if defined(MEEGO_EDITION_HARMATTAN)
     #include <qmsystem2/qmkeys.h>
 #endif
