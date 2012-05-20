@@ -1,16 +1,20 @@
 rplay (0.5.1) unstable; urgency=low
-  * <Add change description here>
 
- -- psa <psa@psabook>  Mon, 21 May 2012 01:59:00 +0400
+  * Fixed page switching;
+  * Created views for prefs and song pages;
+  * Created picture for prefs page;
+
+ -- Rabit <home.rabits@gmail.com>  Mon, 21 May 2012 01:59:00 +0400
 
 rplay (0.5.0) unstable; urgency=low
+
   * Rewrited treeview
     - Good orientation changes
     - Fixed strange bugs in tree and speed problems
   * Added current song position and duration
   * Created id3tag reader (will be used in next version)
 
- -- psa <psa@psabook>  Sat, 19 May 2012 22:18:02 +0400
+ -- Rabit <home.rabits@gmail.com>  Sat, 19 May 2012 22:18:02 +0400
 
 rplay (0.2.0) unstable; urgency=low
 
@@ -18,15 +22,16 @@ rplay (0.2.0) unstable; urgency=low
   * Added new icon
   * Removed old main window
 
- -- psa <psa@psabook>  Sat, 07 Apr 2012 12:21:38 +0400
+ -- Rabit <home.rabits@gmail.com>  Sat, 07 Apr 2012 12:21:38 +0400
 
 rplay (0.1.0) unstable; urgency=low
+
   * Now player can recursive play and pause music
 
- -- psa <psa@psabook>  Tue, 03 Apr 2012 13:31:44 +0400
+ -- Rabit <home.rabits@gmail.com>  Tue, 03 Apr 2012 13:31:44 +0400
 
 rplay (0.0.1) unstable; urgency=low
 
   * Initial Release.
 
- -- psa <psa@psabook>  Thu, 02 Feb 2012 21:44:23 +0400
+ -- Rabit <home.rabits@gmail.com>  Thu, 02 Feb 2012 21:44:23 +0400
