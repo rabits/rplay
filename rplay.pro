@@ -27,6 +27,11 @@ MOBILITY += multimedia
 CONFIG += qdeclarative-boostable meegotouch
 PKGCONFIG += qdeclarative-boostable qmsystem2
 
+unix {
+   CONFIG += link_pkgconfig
+   PKGCONFIG += gstreamer-0.10
+}
+
 # Add dependency to Symbian components
 # CONFIG += qt-components
 

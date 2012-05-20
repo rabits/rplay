@@ -5,7 +5,12 @@ CTreeItem::CTreeItem(QObject *parent) :
 {
 }
 
-CTreeItem::CTreeItem(const QString &title, const QString path, QString type, QString picture, int level, int inside, QObject *parent)
+CTreeItem::CTreeItem(const QString &title
+                    , const QString path
+                    , QString type
+                    , QString picture
+                    , int level
+                    , int inside, QObject *parent)
     : ListItem(parent)
     , m_title(title)
     , m_path(path)

@@ -15,6 +15,8 @@ private:
 public:
     explicit CTree(QObject *parent = 0);
     Q_INVOKABLE ListModel* treeContent(QString path = QString("/"));
+    Q_INVOKABLE QString parentDir(QString path);
+    Q_INVOKABLE QString findCover(QString path);
     QString findNextFile(QString path);
     QString findFirstFile(QDir dir, QString prev_dir = QString());
     

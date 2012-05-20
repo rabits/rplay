@@ -40,6 +40,8 @@ private:
 
     QMediaPlayer*        m_player;
 
+    QMap<QtMultimediaKit::MetaData, QString> m_metadata_list;
+
 public:
     inline static CPlayer* getInstance() { if( s_pInstance == NULL ) s_pInstance = new CPlayer(); return s_pInstance; }
     inline static void     destroyInstance() { delete s_pInstance; }
@@ -56,7 +58,12 @@ public:
 
     Q_INVOKABLE inline QString currentFile() { return CPlayer::getInstance()->setting("rplay/file").toString(); }
     Q_INVOKABLE inline QStringList currentFileArray() { return CPlayer::getInstance()->setting("rplay/file").toString().split('/'); }
+    Q_INVOKABLE inline qint64 currentFilePosition() { return m_player->position(); }
+    Q_INVOKABLE inline qint64 currentFileDuration() { return m_player->duration(); }
     Q_INVOKABLE inline QString currentState() { return CPlayer::getInstance()->setting("rplay/state").toString(); }
+
+    Q_INVOKABLE QHash<QString, QVariant> getMetaData();
+    Q_INVOKABLE QHash<QString, QVariant> getExtendedMetaData();
 
     Q_INVOKABLE void playFile(QString path);
     Q_INVOKABLE void playNext();

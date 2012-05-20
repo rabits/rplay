@@ -1,10 +1,10 @@
 Source: rplay
 Section: user/other
 Priority: optional
-Maintainer: psa <psa@psabook>
+Maintainer: Rabit <home.rabits@gmail.com>
 Build-Depends: debhelper (>= 5), libqt4-dev
 Standards-Version: 3.7.3
-Homepage: <insert the upstream URL, if relevant>
+Homepage: https://github.com/rabits/rplay
 
 Package: rplay
 Architecture: any

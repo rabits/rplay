@@ -25,8 +25,35 @@ CPlayer::CPlayer(QObject *parent)
 #endif
 
     // Create player
-    m_player = new QMediaPlayer(this);
+    m_player = new QMediaPlayer(this, QMediaPlayer::LowLatency);
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(statusChanged(QMediaPlayer::MediaStatus)));
+
+    // Fulling metadata list
+    m_metadata_list.insert(QtMultimediaKit::Title, "Title");
+    m_metadata_list.insert(QtMultimediaKit::SubTitle, "Subtitle");
+    m_metadata_list.insert(QtMultimediaKit::Author, "Author");
+    m_metadata_list.insert(QtMultimediaKit::Comment, "Comment");
+    m_metadata_list.insert(QtMultimediaKit::Description, "Description");
+    m_metadata_list.insert(QtMultimediaKit::Category, "Category");
+    m_metadata_list.insert(QtMultimediaKit::Genre, "Genre");
+    m_metadata_list.insert(QtMultimediaKit::Year, "Year");
+    m_metadata_list.insert(QtMultimediaKit::Date, "Date");
+    m_metadata_list.insert(QtMultimediaKit::UserRating, "User Rating");
+    m_metadata_list.insert(QtMultimediaKit::Keywords, "Keywords");
+    m_metadata_list.insert(QtMultimediaKit::Language, "Language");
+    m_metadata_list.insert(QtMultimediaKit::Publisher, "Publisher");
+    m_metadata_list.insert(QtMultimediaKit::Copyright, "Copyright");
+    m_metadata_list.insert(QtMultimediaKit::ParentalRating, "Parental Rating");
+    m_metadata_list.insert(QtMultimediaKit::RatingOrganisation, "Rating Organisation");
+    m_metadata_list.insert(QtMultimediaKit::AlbumTitle, "Album Title");
+    m_metadata_list.insert(QtMultimediaKit::AlbumArtist, "Album Artist");
+    m_metadata_list.insert(QtMultimediaKit::ContributingArtist, "Contributing Artist");
+    m_metadata_list.insert(QtMultimediaKit::Composer, "Composer");
+    m_metadata_list.insert(QtMultimediaKit::Conductor, "Conductor");
+    m_metadata_list.insert(QtMultimediaKit::Lyrics, "Lyrics");
+    m_metadata_list.insert(QtMultimediaKit::Mood, "Mood");
+    m_metadata_list.insert(QtMultimediaKit::TrackNumber, "Track Number");
+    m_metadata_list.insert(QtMultimediaKit::TrackCount, "Track Count");
 
     // Restore previous playing file
     if( ! setting("rplay/file").isNull() )
@@ -56,6 +83,48 @@ QVariant CPlayer::setting(QString key, QString value)
         m_settings.setValue(key, value);
 
     return m_settings.value(key);
+}
+
+QHash<QString, QVariant> CPlayer::getMetaData()
+{
+    qDebug("Start find metadata");
+    QHash<QString, QVariant> out;
+
+    QList<QtMultimediaKit::MetaData> mdlist = m_player->availableMetaData();
+    int mdsize = mdlist.size();
+
+    QtMultimediaKit::MetaData key;
+
+    for( int i = 0; i < mdsize; i++ )
+    {
+        key = mdlist.at(i);
+        if( m_metadata_list[key].isEmpty() )
+            out.insert(QString(key), m_player->metaData(key));
+        else
+            out.insert(m_metadata_list[key], m_player->metaData(key));
+
+        qDebug(m_metadata_list[key].toStdString().c_str());
+        qDebug(m_player->metaData(key).toString().toStdString().c_str());
+    }
+
+    return out;
+}
+
+QHash<QString, QVariant> CPlayer::getExtendedMetaData()
+{
+    qDebug("Start find ext metadata");
+    QHash<QString, QVariant> out;
+
+    QStringList emdlist = m_player->availableExtendedMetaData();
+
+    for( QStringList::const_iterator it = emdlist.constBegin(); it != emdlist.constEnd(); ++it )
+    {
+        out.insert(*it, m_player->extendedMetaData(*it));
+        qDebug((*it).toStdString().c_str());
+        qDebug(m_player->extendedMetaData(*it).toString().toStdString().c_str());
+    }
+
+    return out;
 }
 
 void CPlayer::statusChanged(QMediaPlayer::MediaStatus status)

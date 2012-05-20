@@ -1,3 +1,12 @@
+rplay (0.5.0) unstable; urgency=low
+  * Rewrited treeview
+    - Good orientation changes
+    - Fixed strange bugs in tree and speed problems
+  * Added current song position and duration
+  * Created id3tag reader (will be used in next version)
+
+ -- psa <psa@psabook>  Sat, 19 May 2012 22:18:02 +0400
+
 rplay (0.2.0) unstable; urgency=low
 
   * Implemented HW keys
