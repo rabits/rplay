@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import "RplayView"
 
 Page {
     id: prefsPage
@@ -30,5 +31,12 @@ Page {
 
     function saveSettings() {
         cplayer.setting("ctree/root_music", s_root_music.text);
+    }
+
+    RplayView {
+        id: prefsView
+        dataTitle: "Settings"
+        dataImage: "images/prefs.png"
+        opacity: 1.0
     }
 }

@@ -1,3 +1,8 @@
+rplay (0.5.1) unstable; urgency=low
+  * <Add change description here>
+
+ -- psa <psa@psabook>  Mon, 21 May 2012 01:59:00 +0400
+
 rplay (0.5.0) unstable; urgency=low
   * Rewrited treeview
     - Good orientation changes
