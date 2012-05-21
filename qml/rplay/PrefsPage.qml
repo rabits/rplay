@@ -19,7 +19,7 @@ Page {
             right: parent.right
             top: parent.top
         }
-        text: cplayer.setting("ctree/root_music")
+        text: cplayer.setting("preferences/music_library_path")
     }
 
     Button {
@@ -30,13 +30,20 @@ Page {
     }
 
     function saveSettings() {
-        cplayer.setting("ctree/root_music", s_root_music.text);
+        cplayer.setting("preferences/music_library_path", s_root_music.text);
+    }
+
+    Component {
+        id: prefsDelegate
+        PrefsDelegate {}
     }
 
     RplayView {
         id: prefsView
         dataTitle: "Settings"
         dataImage: "images/prefs.png"
+        view_model: cplayer.prefsContent()
+        view_delegate: prefsDelegate
         opacity: 1.0
     }
 }

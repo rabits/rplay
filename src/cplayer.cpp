@@ -1,5 +1,6 @@
 #include "cplayer.h"
 #include <QDeclarativeItem>
+#include "model/ckeyvalueitem.h"
 
 CPlayer::CPlayer(QObject *parent)
     : QObject(parent)
@@ -10,8 +11,8 @@ CPlayer::CPlayer(QObject *parent)
 #endif
 {
     // Set default settings
-    if( m_settings.value("ctree/root_music").isNull() )
-        m_settings.setValue("ctree/root_music", QString(QDir::homePath()));
+    if( m_settings.value("preferences/music_library_path").isNull() )
+        m_settings.setValue("preferences/music_library_path", QString(QDir::homePath()));
 
     // Set filters for fs
     m_music_filters << "*.wav" << "*.mp3" << "*.ogg" << "*.flac";
@@ -57,7 +58,7 @@ CPlayer::CPlayer(QObject *parent)
 
     // Restore previous playing file
     if( ! setting("rplay/file").isNull() )
-        m_player->setMedia(QUrl::fromLocalFile(setting("ctree/root_music").toString() + setting("rplay/file").toString()));
+        m_player->setMedia(QUrl::fromLocalFile(setting("preferences/music_library_path").toString() + setting("rplay/file").toString()));
 }
 
 void CPlayer::initContext(QmlApplicationViewer& viewer)
@@ -127,6 +128,15 @@ QHash<QString, QVariant> CPlayer::getExtendedMetaData()
     return out;
 }
 
+ListModel *CPlayer::prefsContent()
+{
+    ListModel* out = new ListModel(new CKeyValueItem(), parent());
+
+    out->appendRow(new CKeyValueItem("preferences/music_library_path", "Music Library path", setting("preferences/music_library_path").toString(), "path", this));
+
+    return out;
+}
+
 void CPlayer::statusChanged(QMediaPlayer::MediaStatus status)
 {
     switch (status) {
@@ -150,7 +160,7 @@ void CPlayer::playFile(QString path)
     if( setting("rplay/file").toString() != path )
     {
         setting("rplay/file", path);
-        m_player->setMedia(QUrl::fromLocalFile(setting("ctree/root_music").toString() + setting("rplay/file").toString()));
+        m_player->setMedia(QUrl::fromLocalFile(setting("preferences/music_library_path").toString() + setting("rplay/file").toString()));
         play();
 
         qDebug("Playing file:");
@@ -178,15 +188,11 @@ void CPlayer::playPrev()
 
 void CPlayer::play()
 {
-    setting("rplay/state", "playing");
-
     m_player->play();
 }
 
 void CPlayer::pause()
 {
-    setting("rplay/state", "pause");
-
     m_player->pause();
 }
 

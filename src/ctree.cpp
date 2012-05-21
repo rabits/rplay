@@ -8,7 +8,7 @@ CTree::CTree(QObject *parent)
 
 QString CTree::findNextFile(QString path)
 {
-    path = CPlayer::getInstance()->setting("ctree/root_music").toString() + path;
+    path = CPlayer::getInstance()->setting("preferences/music_library_path").toString() + path;
     QDir dir = QFileInfo(path).absoluteDir();
     // Find in current directory
     QStringList list_files = dir.entryList(*(CPlayer::getInstance()->musicFilters()), QDir::Files);
@@ -18,12 +18,12 @@ QString CTree::findNextFile(QString path)
         if( fullpath == path )
         {
             if( (it+1) != list_files.constEnd() )
-                return dir.absolutePath().replace(CPlayer::getInstance()->setting("ctree/root_music").toString(), QString())
+                return dir.absolutePath().replace(CPlayer::getInstance()->setting("preferences/music_library_path").toString(), QString())
                         + "/" + *(it+1);
         }
     }
 
-    while( CPlayer::getInstance()->setting("ctree/root_music").toString() != dir.absolutePath() )
+    while( CPlayer::getInstance()->setting("preferences/music_library_path").toString() != dir.absolutePath() )
     {
         // Goto up
         QString previous_dir = dir.absolutePath();
@@ -32,11 +32,11 @@ QString CTree::findNextFile(QString path)
         // Find next file in dirs upper then current
         QString output = findFirstFile(dir.absolutePath(), previous_dir);
         if( ! output.isEmpty() )
-            return output.replace(CPlayer::getInstance()->setting("ctree/root_music").toString(), QString());
+            return output.replace(CPlayer::getInstance()->setting("preferences/music_library_path").toString(), QString());
     }
 
     // Find first file in root - looping
-    return findFirstFile(dir).replace(CPlayer::getInstance()->setting("ctree/root_music").toString(), QString());
+    return findFirstFile(dir).replace(CPlayer::getInstance()->setting("preferences/music_library_path").toString(), QString());
 }
 
 QString CTree::findFirstFile(QDir dir, QString prev_dir)
@@ -82,7 +82,7 @@ ListModel* CTree::treeContent(QString path)
     if( path == "/" )
         path = "";
     ListModel* out = new ListModel(new CTreeItem(), parent());
-    QDir dir = QDir(CPlayer::getInstance()->setting("ctree/root_music").toString() + path);
+    QDir dir = QDir(CPlayer::getInstance()->setting("preferences/music_library_path").toString() + path);
     int level = path.split('/').count();
 
     QStringList list_dirs = dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs);
@@ -123,15 +123,22 @@ QString CTree::parentDir(QString path)
     if( path == "" || path == "/" )
         return "";
 
-    QDir dir = QDir(CPlayer::getInstance()->setting("ctree/root_music").toString() + path);
+    QDir dir = QDir(CPlayer::getInstance()->setting("preferences/music_library_path").toString() + path);
     dir.cdUp();
 
-    return dir.path().replace(CPlayer::getInstance()->setting("ctree/root_music").toString(), "");
+    return dir.path().replace(CPlayer::getInstance()->setting("preferences/music_library_path").toString(), "");
+}
+
+QString CTree::getName(QString path)
+{
+    QDir dir = QDir(CPlayer::getInstance()->setting("preferences/music_library_path").toString() + path);
+
+    return dir.dirName();
 }
 
 QString CTree::findCover(QString path)
 {
-    QDir dir = QDir(CPlayer::getInstance()->setting("ctree/root_music").toString() + path);
+    QDir dir = QDir(CPlayer::getInstance()->setting("preferences/music_library_path").toString() + path);
     QStringList cover_list = dir.entryList(*(CPlayer::getInstance()->coverFilters()), QDir::Files);
 
     return cover_list.isEmpty() ? "" : dir.path() + "/" + cover_list.first();

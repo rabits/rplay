@@ -24,8 +24,10 @@ CONFIG += mobility
 MOBILITY += multimedia
 
 # Speed up launching on MeeGo/Harmattan when using applauncherd daemon
-CONFIG += qdeclarative-boostable meegotouch
-PKGCONFIG += qdeclarative-boostable qmsystem2
+contains(MEEGO_EDITION,harmattan) {
+   CONFIG += qdeclarative-boostable meegotouch
+   PKGCONFIG += qdeclarative-boostable qmsystem2
+}
 
 unix {
    CONFIG += link_pkgconfig
@@ -39,8 +41,9 @@ unix {
 SOURCES += main.cpp \
     src/ctree.cpp \
     src/listmodel.cpp \
-    src/ctreeitem.cpp \
-    src/cplayer.cpp
+    src/cplayer.cpp \
+    src/model/ctreeitem.cpp \
+    src/model/ckeyvalueitem.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -60,7 +63,9 @@ HEADERS += \
     src/ctree.h \
     src/listmodel.h \
     src/ctreeitem.h \
-    src/cplayer.h
+    src/cplayer.h \
+    src/model/ctreeitem.h \
+    src/model/ckeyvalueitem.h
 
 
 

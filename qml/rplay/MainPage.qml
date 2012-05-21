@@ -64,8 +64,8 @@ Page {
     }*/
 
     Component {
-        id: fsView
-        FsView {}
+        id: fsDelegate
+        FsDelegate {}
     }
 
     function setFolder(mypath) {
@@ -74,13 +74,13 @@ Page {
             component.destroy();
         }
 
-        component = Qt.createComponent("RplayView.qml");
+        component = Qt.createComponent("RplayView/RplayView.qml");
         sprite = component.createObject(mainPage,
                                         { dataPath: mypath
-                                        , dataTitle: "Music Library"
+                                        , dataTitle: mypath === "" ? "Music Library" : ctree.getName(mypath)
                                         , dataType: 'folder'
                                         , dataImage: ctree.findCover(mypath)
-                                        , view_delegate: fsView
+                                        , view_delegate: fsDelegate
                                         , view_model: ctree.treeContent(mypath)
                                         });
         sprite.start();

@@ -60,10 +60,11 @@ public:
     Q_INVOKABLE inline QStringList currentFileArray() { return CPlayer::getInstance()->setting("rplay/file").toString().split('/'); }
     Q_INVOKABLE inline qint64 currentFilePosition() { return m_player->position(); }
     Q_INVOKABLE inline qint64 currentFileDuration() { return m_player->duration(); }
-    Q_INVOKABLE inline QString currentState() { return CPlayer::getInstance()->setting("rplay/state").toString(); }
 
     Q_INVOKABLE QHash<QString, QVariant> getMetaData();
     Q_INVOKABLE QHash<QString, QVariant> getExtendedMetaData();
+
+    Q_INVOKABLE ListModel* prefsContent();
 
     Q_INVOKABLE void playFile(QString path);
     Q_INVOKABLE void playNext();

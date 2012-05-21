@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "listmodel.h"
+#include "../listmodel.h"
 
 class CTreeItem : public ListItem
 {
@@ -19,7 +19,7 @@ public:
     };
 
     CTreeItem(QObject *parent = 0);
-    explicit CTreeItem(const QString&, QString, QString, QString, int, int, QObject *parent = 0);
+    explicit CTreeItem(const QString&, const QString, QString, QString, int, int, QObject *parent = 0);
 
     inline QString title() const { return m_title; }
     inline QString path() const { return m_path; }

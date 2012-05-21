@@ -148,7 +148,7 @@ Rectangle {
             property int max_delta: 0
 
             onClicked: {
-                if( Math.abs(max_delta) < (mainPage.width / 20) ) {
+                if( (dataPath != "") && (Math.abs(max_delta) < 20) ) {
                     mainPage.setFolder(ctree.parentDir(dataPath));
                 }
                 max_delta = 0
@@ -167,10 +167,9 @@ Rectangle {
             }
 
             onReleased: {
-                console.log(max_delta)
                 if( mainPage.state === "prefsPage" )
                     prefsPage.saveSettings()
-                if( Math.abs(max_delta) > (mainPage.width / 10) )
+                if( Math.abs(max_delta) > 40 )
                     mainPage.switch_page(max_delta)
                 else
                     mainPage.switch_page(0)
