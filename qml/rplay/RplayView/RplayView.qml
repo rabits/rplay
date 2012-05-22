@@ -16,6 +16,8 @@ Rectangle {
     property variant   view_model
     property Component view_delegate
 
+    signal clicked
+
     property color  colorBackground: "transparent"
     property color  colorGlow: "#55ffffff"
     property int    imageSizeMin: 50
@@ -148,8 +150,8 @@ Rectangle {
             property int max_delta: 0
 
             onClicked: {
-                if( (dataPath != "") && (Math.abs(max_delta) < 20) ) {
-                    mainPage.setFolder(ctree.parentDir(dataPath));
+                if( Math.abs(max_delta) < 20 ) {
+                    rplay_view.clicked()
                 }
                 max_delta = 0
             }
@@ -167,8 +169,6 @@ Rectangle {
             }
 
             onReleased: {
-                if( mainPage.state === "prefsPage" )
-                    prefsPage.saveSettings()
                 if( Math.abs(max_delta) > 40 )
                     mainPage.switch_page(max_delta)
                 else

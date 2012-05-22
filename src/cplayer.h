@@ -61,8 +61,8 @@ public:
     Q_INVOKABLE inline qint64 currentFilePosition() { return m_player->position(); }
     Q_INVOKABLE inline qint64 currentFileDuration() { return m_player->duration(); }
 
-    Q_INVOKABLE QHash<QString, QVariant> getMetaData();
-    Q_INVOKABLE QHash<QString, QVariant> getExtendedMetaData();
+    Q_INVOKABLE ListModel* getMetaData();
+    Q_INVOKABLE ListModel* getExtendedMetaData();
 
     Q_INVOKABLE ListModel* prefsContent();
 
@@ -74,6 +74,7 @@ public:
     Q_INVOKABLE void pause();
     
 signals:
+    void metaDataChanged();
     
 public slots:
     void statusChanged(QMediaPlayer::MediaStatus status);

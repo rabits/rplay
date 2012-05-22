@@ -1,3 +1,11 @@
+rplay (0.6.0) unstable; urgency=low
+
+  * Added Song info page with metadata of current song;
+  * If player is minimized - it switches to song info page;
+  * Fixed slow items in preferencens;
+
+ -- Rabit <home.rabits@gmail.com>  Wed, 23 May 2012 02:21:33 +0400
+
 rplay (0.5.2) unstable; urgency=low
 
   * Settings is working

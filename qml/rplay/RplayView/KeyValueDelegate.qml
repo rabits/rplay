@@ -1,10 +1,9 @@
 import ListModels 1.0
 import QtQuick 1.1
 import com.nokia.meego 1.0
-import "dialog"
 
 Rectangle {
-    id: prefDelegate
+    id: keyvalueDelegate
 
     height: info.height + 8
     color: "transparent"
@@ -35,7 +34,7 @@ Rectangle {
             font {
                 weight: Font.Bold
                 pixelSize: 0
-                pointSize: 16
+                pointSize: 14
             }
             text: model.title
             color: "#888"
@@ -51,10 +50,11 @@ Rectangle {
             }
             font {
                 pixelSize: 0
-                pointSize: 12
+                pointSize: 18
+                family: "Monospace"
             }
             text: model.value
-            color: "#555"
+            color: "#aaa"
             wrapMode: Text.Wrap
         }
     }
@@ -70,27 +70,8 @@ Rectangle {
         }
     }
 
-    FsDialog {
-        id: selectFolderDialog
-        titleText: "Select folder"
-        filterList: [""]
-        currentFolder: "file://" + value.text
-        onAccepted: {
-            value.text = cplayer.setting(model.key, selectedFile.replace("file://", ""))
-            selectFolderDialog.currentFolder = value.text
-        }
-    }
-
-    Dialog {
-        id: textEditDialog
-    }
-
-    Dialog {
-        id: numberEditDialog
-    }
-
-    Dialog {
-        id: boolEditDialog
+    function setValue () {
+        value.text = cplayer.setting(model.key, prefsPage.selectedFolder.replace("file://", ""));
     }
 
     MouseArea {
@@ -100,7 +81,7 @@ Rectangle {
         onClicked: {
             switch( model.type ) {
             case 'path':
-                selectFolderDialog.open()
+                prefsPage.selectFolder("file://" + value.text, setValue)
                 break;
             case 'text':
                 textEditDialog.show()

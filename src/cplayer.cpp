@@ -28,8 +28,11 @@ CPlayer::CPlayer(QObject *parent)
     // Create player
     m_player = new QMediaPlayer(this, QMediaPlayer::LowLatency);
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(statusChanged(QMediaPlayer::MediaStatus)));
+    connect(m_player, SIGNAL(metaDataChanged()), this, SIGNAL(metaDataChanged()));
 
     // Fulling metadata list
+    m_metadata_list.insert(QtMultimediaKit::AlbumArtist, "Artist");
+    m_metadata_list.insert(QtMultimediaKit::AlbumTitle, "Album");
     m_metadata_list.insert(QtMultimediaKit::Title, "Title");
     m_metadata_list.insert(QtMultimediaKit::SubTitle, "Subtitle");
     m_metadata_list.insert(QtMultimediaKit::Author, "Author");
@@ -46,8 +49,6 @@ CPlayer::CPlayer(QObject *parent)
     m_metadata_list.insert(QtMultimediaKit::Copyright, "Copyright");
     m_metadata_list.insert(QtMultimediaKit::ParentalRating, "Parental Rating");
     m_metadata_list.insert(QtMultimediaKit::RatingOrganisation, "Rating Organisation");
-    m_metadata_list.insert(QtMultimediaKit::AlbumTitle, "Album Title");
-    m_metadata_list.insert(QtMultimediaKit::AlbumArtist, "Album Artist");
     m_metadata_list.insert(QtMultimediaKit::ContributingArtist, "Contributing Artist");
     m_metadata_list.insert(QtMultimediaKit::Composer, "Composer");
     m_metadata_list.insert(QtMultimediaKit::Conductor, "Conductor");
@@ -55,6 +56,15 @@ CPlayer::CPlayer(QObject *parent)
     m_metadata_list.insert(QtMultimediaKit::Mood, "Mood");
     m_metadata_list.insert(QtMultimediaKit::TrackNumber, "Track Number");
     m_metadata_list.insert(QtMultimediaKit::TrackCount, "Track Count");
+    m_metadata_list.insert(QtMultimediaKit::Size, "Size");
+    m_metadata_list.insert(QtMultimediaKit::MediaType, "Type");
+    m_metadata_list.insert(QtMultimediaKit::Duration, "Duration");
+    m_metadata_list.insert(QtMultimediaKit::AudioBitRate, "Audio Bit Rate");
+    m_metadata_list.insert(QtMultimediaKit::AudioCodec, "Audio Codec");
+    m_metadata_list.insert(QtMultimediaKit::AverageLevel, "Average Level");
+    m_metadata_list.insert(QtMultimediaKit::ChannelCount, "Channels");
+    m_metadata_list.insert(QtMultimediaKit::PeakValue, "Peak");
+    m_metadata_list.insert(QtMultimediaKit::SampleRate, "Sample Rate");
 
     // Restore previous playing file
     if( ! setting("rplay/file").isNull() )
@@ -86,43 +96,60 @@ QVariant CPlayer::setting(QString key, QString value)
     return m_settings.value(key);
 }
 
-QHash<QString, QVariant> CPlayer::getMetaData()
+ListModel *CPlayer::getMetaData()
 {
-    qDebug("Start find metadata");
-    QHash<QString, QVariant> out;
+    ListModel *out = new ListModel(new CKeyValueItem(), parent());
 
-    QList<QtMultimediaKit::MetaData> mdlist = m_player->availableMetaData();
-    int mdsize = mdlist.size();
-
-    QtMultimediaKit::MetaData key;
-
-    for( int i = 0; i < mdsize; i++ )
+    if( m_player->isMetaDataAvailable() )
     {
-        key = mdlist.at(i);
-        if( m_metadata_list[key].isEmpty() )
-            out.insert(QString(key), m_player->metaData(key));
-        else
-            out.insert(m_metadata_list[key], m_player->metaData(key));
+        qDebug("Metadata available");
+        QList<QtMultimediaKit::MetaData> mdlist = m_player->availableMetaData();
+        QMap<QString, QString> duplist;
+        int mdsize = mdlist.size();
 
-        qDebug(m_metadata_list[key].toStdString().c_str());
-        qDebug(m_player->metaData(key).toString().toStdString().c_str());
+        QtMultimediaKit::MetaData key;
+        QString value;
+
+        for( int i = 0; i < mdsize; i++ )
+        {
+            key = mdlist.at(i);
+            value = m_player->metaData(key).toString();
+            if( ! (value.isEmpty() || duplist.value(QString::number(key), "") == value) )
+            {
+                if( m_metadata_list[key].isEmpty() )
+                    out->appendRow(new CKeyValueItem(QString::number(key), QString::number(key), value, "meta", this));
+                else
+                    out->appendRow(new CKeyValueItem(QString::number(key), m_metadata_list[key], m_player->metaData(key).toString(), "meta", this));
+
+                duplist.insert(QString::number(key), value);
+            }
+        }
     }
 
     return out;
 }
 
-QHash<QString, QVariant> CPlayer::getExtendedMetaData()
+ListModel *CPlayer::getExtendedMetaData()
 {
-    qDebug("Start find ext metadata");
-    QHash<QString, QVariant> out;
+    ListModel *out = new ListModel(new CKeyValueItem(), parent());
 
-    QStringList emdlist = m_player->availableExtendedMetaData();
-
-    for( QStringList::const_iterator it = emdlist.constBegin(); it != emdlist.constEnd(); ++it )
+    if( m_player->isMetaDataAvailable() )
     {
-        out.insert(*it, m_player->extendedMetaData(*it));
-        qDebug((*it).toStdString().c_str());
-        qDebug(m_player->extendedMetaData(*it).toString().toStdString().c_str());
+        qDebug("Metadata available");
+        QMap<QString, QString> duplist;
+        QString value;
+
+        QStringList emdlist = m_player->availableExtendedMetaData();
+
+        for( QStringList::const_iterator it = emdlist.constBegin(); it != emdlist.constEnd(); ++it )
+        {
+            value = m_player->extendedMetaData(*it).toString();
+            if( ! (value.isEmpty() || duplist.value(*it, "") == value) )
+            {
+                out->appendRow(new CKeyValueItem(*it, *it, m_player->extendedMetaData(*it).toString(), "extmeta", this));
+                duplist.insert(*it, value);
+            }
+        }
     }
 
     return out;

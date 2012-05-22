@@ -3,7 +3,7 @@ import QtQuick 1.1
 import com.nokia.meego 1.0
 
 Rectangle {
-    id: fsDelegate
+    id: treeDelegate
 
     // private
     property bool __active: current_file_array[model.level] === model.title

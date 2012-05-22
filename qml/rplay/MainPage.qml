@@ -1,3 +1,4 @@
+import ListModels 1.0
 import QtQuick 1.1
 import com.nokia.meego 1.0
 import "RplayView"
@@ -64,12 +65,14 @@ Page {
     }*/
 
     Component {
-        id: fsDelegate
-        FsDelegate {}
+        id: treeDelegate
+        TreeDelegate {}
     }
 
     function setFolder(mypath) {
         if( sprite != null ) {
+            if( ! mypath )
+                mypath = ctree.parentDir(sprite.dataPath)
             sprite.destroy();
             component.destroy();
         }
@@ -80,15 +83,28 @@ Page {
                                         , dataTitle: mypath === "" ? "Music Library" : ctree.getName(mypath)
                                         , dataType: 'folder'
                                         , dataImage: ctree.findCover(mypath)
-                                        , view_delegate: fsDelegate
+                                        , view_delegate: treeDelegate
                                         , view_model: ctree.treeContent(mypath)
                                         });
+        sprite.clicked.connect(setFolder)
         sprite.start();
     }
 
     Component.onCompleted: {
         if( sprite == null ) {
             setFolder(ctree.parentDir(current_file))
+        }
+    }
+
+    Connections {
+        target: platformWindow
+
+        onViewModeChanged: {
+            if( platformWindow.viewMode == WindowState.Fullsize ) {
+                mainPage.state = last_state
+            } else {
+                mainPage.state = 'songPage'
+            }
         }
     }
 
