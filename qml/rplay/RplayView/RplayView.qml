@@ -11,8 +11,6 @@ Rectangle {
     property string dataType: ""
     property string dataImage: ""
 
-    property variant fill: parent
-
     property variant   view_model
     property Component view_delegate
 
@@ -22,6 +20,7 @@ Rectangle {
     property color  colorGlow: "#55ffffff"
     property int    imageSizeMin: 50
     property int    imageSizeMax: 150
+    property int    titleSize: 16
 
     function start() {
         showAnimation.start()
@@ -39,7 +38,7 @@ Rectangle {
     }
 
     opacity: 0.0
-    anchors.fill: fill
+    anchors.fill: parent
 
     Rectangle {
         id: header
@@ -84,7 +83,7 @@ Rectangle {
                 font {
                     weight: Font.Bold
                     pixelSize: 0
-                    pointSize: 16
+                    pointSize: titleSize
                 }
                 text: dataTitle
                 color: "gray"

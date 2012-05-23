@@ -16,6 +16,25 @@ Page {
         }
     }
 
+    Connections {
+        target: platformWindow
+
+        onViewModeChanged: {
+            if( platformWindow.viewMode == WindowState.Fullsize ) {
+                songView.titleSize = 16
+                songView.rotation = 0
+                songView.anchors.fill = songPage
+            } else {
+                songView.titleSize = 30
+                songView.rotation = 90
+                songView.anchors.fill = null
+                songView.anchors.centerIn = songPage
+                songView.height = mainPage.width - 70
+                songView.width = mainPage.height
+            }
+        }
+    }
+
     function update() {
         songView.dataTitle = ctree.getName(cplayer.currentFile())
         songView.dataImage = ctree.findCover(ctree.parentDir(cplayer.currentFile()))
