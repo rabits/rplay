@@ -13,9 +13,11 @@ CPlayer::CPlayer(QObject *parent)
     // Set default settings
     if( m_settings.value("preferences/music_library_path").isNull() )
         m_settings.setValue("preferences/music_library_path", QString(QDir::homePath()));
+    if( m_settings.value("preferences/lyrics_extension").isNull() )
+        m_settings.setValue("preferences/lyrics_extension", "txt");
 
     // Set filters for fs
-    m_music_filters << "*.wav" << "*.mp3" << "*.ogg" << "*.flac";
+    m_music_filters << "*.wav" << "*.mp2" << "*.mp3" << "*.mp4" << "*.ogg" << "*.flac" << "*.aac";
     m_cover_filters << "cover.jpg" << "cover.jpeg" << "cover.png" << "folder.jpg" << "folder.jpeg" << "folder.png";
 
 #if defined(MEEGO_EDITION_HARMATTAN)
@@ -66,6 +68,42 @@ CPlayer::CPlayer(QObject *parent)
     m_metadata_list.insert(QtMultimediaKit::PeakValue, "Peak");
     m_metadata_list.insert(QtMultimediaKit::SampleRate, "Sample Rate");
 
+    // Set ordering
+    m_metadata_list_order.append(QtMultimediaKit::AlbumArtist);
+    m_metadata_list_order.append(QtMultimediaKit::AlbumTitle);
+    m_metadata_list_order.append(QtMultimediaKit::Title);
+    m_metadata_list_order.append(QtMultimediaKit::Year);
+    m_metadata_list_order.append(QtMultimediaKit::Genre);
+    m_metadata_list_order.append(QtMultimediaKit::SubTitle);
+    m_metadata_list_order.append(QtMultimediaKit::Author);
+    m_metadata_list_order.append(QtMultimediaKit::Comment);
+    m_metadata_list_order.append(QtMultimediaKit::Description);
+    m_metadata_list_order.append(QtMultimediaKit::Category);
+    m_metadata_list_order.append(QtMultimediaKit::Date);
+    m_metadata_list_order.append(QtMultimediaKit::UserRating);
+    m_metadata_list_order.append(QtMultimediaKit::Keywords);
+    m_metadata_list_order.append(QtMultimediaKit::Language);
+    m_metadata_list_order.append(QtMultimediaKit::Publisher);
+    m_metadata_list_order.append(QtMultimediaKit::Copyright);
+    m_metadata_list_order.append(QtMultimediaKit::ParentalRating);
+    m_metadata_list_order.append(QtMultimediaKit::RatingOrganisation);
+    m_metadata_list_order.append(QtMultimediaKit::ContributingArtist);
+    m_metadata_list_order.append(QtMultimediaKit::Composer);
+    m_metadata_list_order.append(QtMultimediaKit::Conductor);
+    m_metadata_list_order.append(QtMultimediaKit::Lyrics);
+    m_metadata_list_order.append(QtMultimediaKit::Mood);
+    m_metadata_list_order.append(QtMultimediaKit::TrackNumber);
+    m_metadata_list_order.append(QtMultimediaKit::TrackCount);
+    m_metadata_list_order.append(QtMultimediaKit::Size);
+    m_metadata_list_order.append(QtMultimediaKit::MediaType);
+    m_metadata_list_order.append(QtMultimediaKit::Duration);
+    m_metadata_list_order.append(QtMultimediaKit::AudioBitRate);
+    m_metadata_list_order.append(QtMultimediaKit::AudioCodec);
+    m_metadata_list_order.append(QtMultimediaKit::AverageLevel);
+    m_metadata_list_order.append(QtMultimediaKit::ChannelCount);
+    m_metadata_list_order.append(QtMultimediaKit::PeakValue);
+    m_metadata_list_order.append(QtMultimediaKit::SampleRate);
+
     // Restore previous playing file
     if( ! setting("rplay/file").isNull() )
         m_player->setMedia(QUrl::fromLocalFile(setting("preferences/music_library_path").toString() + setting("rplay/file").toString()));
@@ -79,7 +117,6 @@ void CPlayer::initContext(QmlApplicationViewer& viewer)
 
     m_context->setContextProperty("cplayer", this);
     m_context->setContextProperty("ctree", tree());
-    m_context->setContextProperty("current_file", currentFile());
     m_context->setContextProperty("current_file_array", currentFileArray());
 }
 
@@ -102,26 +139,21 @@ ListModel *CPlayer::getMetaData()
 
     if( m_player->isMetaDataAvailable() )
     {
-        qDebug("Metadata available");
         QList<QtMultimediaKit::MetaData> mdlist = m_player->availableMetaData();
-        QMap<QString, QString> duplist;
-        int mdsize = mdlist.size();
+        QHash<QtMultimediaKit::MetaData, QString> duplist;
 
-        QtMultimediaKit::MetaData key;
         QString value;
 
-        for( int i = 0; i < mdsize; i++ )
+        for( QList<QtMultimediaKit::MetaData>::const_iterator it = m_metadata_list_order.constBegin(); it != m_metadata_list_order.constEnd(); it++ )
         {
-            key = mdlist.at(i);
-            value = m_player->metaData(key).toString();
-            if( ! (value.isEmpty() || duplist.value(QString::number(key), "") == value) )
+            if( mdlist.contains(*it) )
             {
-                if( m_metadata_list[key].isEmpty() )
-                    out->appendRow(new CKeyValueItem(QString::number(key), QString::number(key), value, "meta", this));
-                else
-                    out->appendRow(new CKeyValueItem(QString::number(key), m_metadata_list[key], m_player->metaData(key).toString(), "meta", this));
-
-                duplist.insert(QString::number(key), value);
+                value = m_player->metaData(*it).toString();
+                if( ! (value.isEmpty() || duplist.value(*it, "") == value) )
+                {
+                    out->appendRow(new CKeyValueItem(QString::number(*it), m_metadata_list[*it], m_player->metaData(*it).toString(), "meta", this));
+                    duplist.insert(*it, value);
+                }
             }
         }
     }
@@ -135,11 +167,11 @@ ListModel *CPlayer::getExtendedMetaData()
 
     if( m_player->isMetaDataAvailable() )
     {
-        qDebug("Metadata available");
         QMap<QString, QString> duplist;
         QString value;
 
         QStringList emdlist = m_player->availableExtendedMetaData();
+        emdlist.sort();
 
         for( QStringList::const_iterator it = emdlist.constBegin(); it != emdlist.constEnd(); ++it )
         {
@@ -155,11 +187,41 @@ ListModel *CPlayer::getExtendedMetaData()
     return out;
 }
 
+ListModel *CPlayer::getLyrics(QString path)
+{
+    if( path == "" )
+        path = currentFile();
+    path = setting("preferences/music_library_path").toString() + path;
+    path = path.left(path.length() - QFileInfo(path).suffix().length()).append(setting("preferences/lyrics_extension").toString());
+
+    ListModel *out = new ListModel(new CKeyValueItem(), parent());
+
+    QFile lyrics(path);
+
+    // If file less then 50Kb and readable
+    if( (lyrics.size() < 50 * 1024) && lyrics.open(QIODevice::ReadOnly | QIODevice::Text) )
+    {
+        QTextStream in(&lyrics);
+        out->appendRow(new CKeyValueItem(path, "Lyrics", in.readAll(), "text", this));
+    }
+
+    return out;
+}
+
 ListModel *CPlayer::prefsContent()
 {
     ListModel* out = new ListModel(new CKeyValueItem(), parent());
 
-    out->appendRow(new CKeyValueItem("preferences/music_library_path", "Music Library path", setting("preferences/music_library_path").toString(), "path", this));
+    out->appendRow(new CKeyValueItem("preferences/music_library_path", "Music Library path"
+                                     , setting("preferences/music_library_path").toString()
+                                     , "folder_path", this));
+
+    QStringList about;
+    about << "Program: rPlay v1.0.0" << "Author:  Rabit <home.rabits@gmail.com>" << "Site:    https://github.com/rabits/rplay";
+
+    out->appendRow(new CKeyValueItem("", "About"
+                                     , about.join("\n")
+                                     , "about", this));
 
     return out;
 }
@@ -207,10 +269,12 @@ void CPlayer::playFile(QString path)
 void CPlayer::playNext()
 {
     playFile(m_tree.findNextFile(setting("rplay/file").toString()));
+    emit next();
 }
 
-void CPlayer::playPrev()
+void CPlayer::playRev()
 {
+    m_player->setPosition(0);
 }
 
 void CPlayer::play()
@@ -228,11 +292,7 @@ void CPlayer::hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state)
 {
     if( state == MeeGo::QmKeys::KeyUp )
     {
-        qDebug("!key released!");
         switch (key) {
-        case MeeGo::QmKeys::NextSong :
-            playNext();
-            break;
         case MeeGo::QmKeys::PlayPause :
             if( m_player->state() == QMediaPlayer::PlayingState )
                 pause();
@@ -245,24 +305,62 @@ void CPlayer::hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state)
         case MeeGo::QmKeys::Pause :
             pause();
             break;
-        case MeeGo::QmKeys::UnknownKey :
-        case MeeGo::QmKeys::KeyboardSlider :
-        case MeeGo::QmKeys::Camera :
-        case MeeGo::QmKeys::VolumeUp :
-        case MeeGo::QmKeys::VolumeDown :
-        case MeeGo::QmKeys::Phone :
-        case MeeGo::QmKeys::Stop :
-        case MeeGo::QmKeys::Forward :
-        case MeeGo::QmKeys::Rewind :
-        case MeeGo::QmKeys::Mute :
-        case MeeGo::QmKeys::LeftKey :
-        case MeeGo::QmKeys::RightKey :
-        case MeeGo::QmKeys::UpKey :
-        case MeeGo::QmKeys::DownKey :
-        case MeeGo::QmKeys::End :
+        case MeeGo::QmKeys::NextSong :
+            playNext();
+            break;
         case MeeGo::QmKeys::PreviousSong :
+            playRev();
+            break;
+        case MeeGo::QmKeys::UnknownKey :
+            qDebug("UnknownKey");
+            break;
+        case MeeGo::QmKeys::KeyboardSlider :
+            qDebug("KeyboardSlider");
+            break;
+        case MeeGo::QmKeys::Camera :
+            qDebug("Camera");
+            break;
+        case MeeGo::QmKeys::VolumeUp :
+            qDebug("VolumeUp");
+            break;
+        case MeeGo::QmKeys::VolumeDown :
+            qDebug("VolumeDown");
+            break;
+        case MeeGo::QmKeys::Phone :
+            qDebug("Phone");
+            break;
+        case MeeGo::QmKeys::Stop :
+            qDebug("Stop");
+            break;
+        case MeeGo::QmKeys::Forward :
+            qDebug("Forward");
+            break;
+        case MeeGo::QmKeys::Rewind :
+            qDebug("Rewind");
+            break;
+        case MeeGo::QmKeys::Mute :
+            qDebug("Mute");
+            break;
+        case MeeGo::QmKeys::LeftKey :
+            qDebug("LeftKey");
+            break;
+        case MeeGo::QmKeys::RightKey :
+            qDebug("RightKey");
+            break;
+        case MeeGo::QmKeys::UpKey :
+            qDebug("UpKey");
+            break;
+        case MeeGo::QmKeys::DownKey :
+            qDebug("DownKey");
+            break;
+        case MeeGo::QmKeys::End :
+            qDebug("End");
+            break;
         case MeeGo::QmKeys::RightCtrl :
+            qDebug("RightCtrl");
+            break;
         case MeeGo::QmKeys::PowerKey :
+            qDebug("PowerKey");
             break;
         }
     }

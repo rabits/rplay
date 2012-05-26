@@ -70,8 +70,27 @@ Rectangle {
         }
     }
 
-    function setValue () {
-        value.text = cplayer.setting(model.key, prefsPage.selectedFolder.replace("file://", ""));
+    property variant dialog_component
+    property variant dialog_sprite
+
+    function setValueFolder() {
+        value.text = cplayer.setting(model.key, dialog_sprite.selectedFile.replace("file://", ""));
+        if( model.value !== value.text )
+            mainPage.setFolder("/");
+    }
+
+    function changeFolder(path) {
+        if( dialog_sprite != null ) {
+            dialog_sprite.destroy();
+            dialog_component.destroy();
+        }
+
+        dialog_component = Qt.createComponent("dialog/FsDialog.qml");
+        dialog_sprite = dialog_component.createObject(prefsPage, { titleText: "Select folder"
+                                                         , filterList: [""]
+                                                         , currentFolder: path});
+        dialog_sprite.accepted.connect(setValueFolder);
+        dialog_sprite.open();
     }
 
     MouseArea {
@@ -80,17 +99,16 @@ Rectangle {
 
         onClicked: {
             switch( model.type ) {
-            case 'path':
-                prefsPage.selectFolder("file://" + value.text, setValue)
+            case 'folder_path':
+                changeFolder("file://" + value.text)
+                break;
+            case 'string':
                 break;
             case 'text':
-                textEditDialog.show()
                 break;
             case 'int':
-                numberEditDialog.show()
                 break;
             case 'bool':
-                boolEditDialog.show()
                 break;
             }
         }

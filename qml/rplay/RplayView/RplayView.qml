@@ -40,6 +40,18 @@ Rectangle {
     opacity: 0.0
     anchors.fill: parent
 
+    Image {
+        id: backgroundImage
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        width: 300
+        height: 300
+
+        source: "images/rabit.png"
+
+        fillMode: Image.PreserveAspectFit
+    }
+
     Rectangle {
         id: header
         height: Math.max(imageSizeMax, info.height) + 8
@@ -100,9 +112,9 @@ Rectangle {
                 text: dataType
                 font {
                     pixelSize: 0
-                    pointSize: 12
+                    pointSize: 16
                 }
-                color: "#444"
+                color: "#555"
             }
 
             Label {
@@ -115,10 +127,10 @@ Rectangle {
                 }
                 font {
                     pixelSize: 0
-                    pointSize: 12
+                    pointSize: 16
                 }
                 text: list.count
-                color: "#444"
+                color: "#555"
             }
 
             Label {
@@ -131,12 +143,12 @@ Rectangle {
                 }
                 font {
                     pixelSize: 0
-                    pointSize: 10
+                    pointSize: 12
                 }
                 text: dataPath
                 color: "#777"
                 maximumLineCount: 4
-                wrapMode: Text.Wrap
+                wrapMode: Text.WrapAnywhere
                 elide: Text.ElideRight
             }
         }

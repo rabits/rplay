@@ -18,11 +18,14 @@
    style="enable-background:new 0 0 24 32;"
    xml:space="preserve"
    id="svg3270"
-   inkscape:version="0.48.1 r9760"
-   sodipodi:docname="file.svg"><metadata
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="file.svg"
+   inkscape:export-filename="/home/psa/Projects/rplay/src/images/file.png"
+   inkscape:export-xdpi="419.28461"
+   inkscape:export-ydpi="419.28461"><metadata
    id="metadata3280"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
    id="defs3278" /><sodipodi:namedview
    pagecolor="#ffffff"
    bordercolor="#666666"
@@ -37,7 +40,7 @@
    id="namedview3276"
    showgrid="false"
    inkscape:zoom="9.46875"
-   inkscape:cx="12"
+   inkscape:cx="-8.7524752"
    inkscape:cy="16"
    inkscape:window-x="0"
    inkscape:window-y="19"
@@ -46,12 +49,12 @@
 <g
    id="Layer_1">
 </g>
+
 <g
-   id="document_x5F_alt_x5F_stroke"
-   style="fill:#333333">
-	<path
-   style="fill:#333333"
-   d="M14,0H0v32h24V9.998L14,0z M4,28V4h8v8h8v16H4z"
-   id="path3274" />
-</g>
-</svg>
+   transform="matrix(0.35657378,0,0,0.35657378,-129.13482,-173.84748)"
+   id="layer1"
+   style="fill:#333333"><path
+     inkscape:connector-curvature="0"
+     d="m 374.5278,575.25682 c -5.58785,-5.02026 -2.53077,-13.19751 6.69317,-17.90321 3.07692,-1.56973 5.34644,-2.24914 9.40578,-2.12895 2.46224,0.0631 5.29391,1.48242 5.29391,1.48242 0,-18.05494 -0.0682,-52.28016 -0.0682,-69.15127 1.00028,0.006 1.64015,-0.006 3.04094,-0.006 0,0.99254 -0.0134,1.7062 -0.0134,2.58602 0,0.85738 0.0603,1.41406 0.1432,1.95287 0.96866,6.29923 2.37919,8.7789 9.42205,16.56374 8.9072,9.84558 11.49436,15.77596 11.44145,23.65154 -0.0492,7.38807 -6.54795,23.21243 -8.02557,22.55589 2.05465,-5.53599 4.82532,-11.50844 5.56223,-16.50593 0.90056,-6.10733 -1.58049,-14.72667 -5.57333,-19.27425 -3.28359,-3.73981 -10.84654,-7.08467 -12.90954,-7.08467 0,0 -0.0876,36.37228 -0.0876,50.16231 0,2.37471 -2.15126,6.40059 -3.36307,7.84809 -5.52631,6.60112 -16.13366,9.58986 -20.96209,5.25188 z"
+     style="fill:#333333"
+     id="path2239" /></g></svg>

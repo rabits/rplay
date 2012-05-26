@@ -40,7 +40,8 @@ private:
 
     QMediaPlayer*        m_player;
 
-    QMap<QtMultimediaKit::MetaData, QString> m_metadata_list;
+    QHash<QtMultimediaKit::MetaData, QString> m_metadata_list;
+    QList<QtMultimediaKit::MetaData> m_metadata_list_order;
 
 public:
     inline static CPlayer* getInstance() { if( s_pInstance == NULL ) s_pInstance = new CPlayer(); return s_pInstance; }
@@ -63,18 +64,20 @@ public:
 
     Q_INVOKABLE ListModel* getMetaData();
     Q_INVOKABLE ListModel* getExtendedMetaData();
+    Q_INVOKABLE ListModel* getLyrics(QString path);
 
     Q_INVOKABLE ListModel* prefsContent();
 
     Q_INVOKABLE void playFile(QString path);
     Q_INVOKABLE void playNext();
-    Q_INVOKABLE void playPrev();
+    Q_INVOKABLE void playRev();
 
     Q_INVOKABLE void play();
     Q_INVOKABLE void pause();
     
 signals:
     void metaDataChanged();
+    void next();
     
 public slots:
     void statusChanged(QMediaPlayer::MediaStatus status);

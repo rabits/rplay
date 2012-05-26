@@ -11,6 +11,8 @@ Page {
 
     property string last_state: 'mainPage'
 
+    property string previousCurrentParent: ctree.parentDir(cplayer.currentFile())
+
     function switch_page(leftright) {
         if( leftright < 0 ) {
             if( last_state === 'mainPage' )
@@ -72,7 +74,7 @@ Page {
     function setFolder(mypath) {
         if( sprite != null ) {
             if( ! mypath )
-                mypath = ctree.parentDir(sprite.dataPath)
+                mypath = ctree.parentDir(sprite.dataPath);
             sprite.destroy();
             component.destroy();
         }
@@ -86,13 +88,13 @@ Page {
                                         , view_delegate: treeDelegate
                                         , view_model: ctree.treeContent(mypath)
                                         });
-        sprite.clicked.connect(setFolder)
+        sprite.clicked.connect(setFolder);
         sprite.start();
     }
 
     Component.onCompleted: {
         if( sprite == null ) {
-            setFolder(ctree.parentDir(current_file))
+            setFolder(ctree.parentDir(cplayer.currentFile()))
         }
     }
 
@@ -104,6 +106,18 @@ Page {
                 mainPage.state = last_state
             } else {
                 mainPage.state = 'songPage'
+            }
+        }
+    }
+
+    Connections {
+        target: cplayer
+
+        onNext: {
+            if( (previousCurrentParent !== ctree.parentDir(cplayer.currentFile())) && (previousCurrentParent === sprite.dataPath) )
+            {
+                previousCurrentParent = ctree.parentDir(cplayer.currentFile());
+                setFolder(previousCurrentParent);
             }
         }
     }

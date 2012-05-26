@@ -12,7 +12,7 @@ Page {
         target: cplayer
 
         onMetaDataChanged: {
-            update();
+            update("");
         }
     }
 
@@ -35,11 +35,22 @@ Page {
         }
     }
 
-    function update() {
-        songView.dataTitle = ctree.getName(cplayer.currentFile())
-        songView.dataImage = ctree.findCover(ctree.parentDir(cplayer.currentFile()))
-        songView.view_model = cplayer.getMetaData();
-        songView.dataType = "Metadata"
+    function update(type) {
+        if( type !== "" )
+            songView.dataType = type;
+        else {
+            songView.dataTitle = ctree.getName(cplayer.currentFile());
+            songView.dataImage = ctree.findCover(ctree.parentDir(cplayer.currentFile()));
+            songView.dataPath = cplayer.currentFile();
+        }
+
+        if( songView.dataType === "Metadata" ) {
+            songView.view_model = cplayer.getMetaData();
+        } else if( songView.dataType === "Extended Metadata" ) {
+            songView.view_model = cplayer.getExtendedMetaData();
+        } else {
+            songView.view_model = cplayer.getLyrics("");
+        }
     }
 
     Component {
@@ -50,16 +61,17 @@ Page {
     RplayView {
         id: songView
         dataTitle: "Song"
-        dataType: "no metadata"
+        dataType: "Metadata"
         dataImage: "images/album.png"
         view_delegate: keyvalueDelegate
         opacity: 1.0
         onClicked: {
             if( songView.dataType === "Metadata" ) {
-                songView.view_model = cplayer.getExtendedMetaData();
-                songView.dataType = "Extended Metadata"
+                update("Extended Metadata");
+            } else if( songView.dataType === "Extended Metadata" ) {
+                update("Lyrics");
             } else {
-                update()
+                update("Metadata");
             }
         }
     }

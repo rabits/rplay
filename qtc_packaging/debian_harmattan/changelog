@@ -1,3 +1,15 @@
+rplay (1.0.0) unstable; urgency=low
+
+  * Rewind to garniture button back
+  * README.md for github
+  * New icon, backgraund image and file icon
+  * Tree watch for current song
+  * Some view and usability changes
+  * txt lyrics viewer in song panel
+  * Changed oreder of metadata
+
+ -- Rabit <home.rabits@gmail.com>  Sat, 26 May 2012 21:16:51 +0400
+
 rplay (0.6.1) unstable; urgency=low
 
   * Added thumbinal-rotation to view more info

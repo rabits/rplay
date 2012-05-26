@@ -29,10 +29,10 @@ contains(MEEGO_EDITION,harmattan) {
    PKGCONFIG += qdeclarative-boostable qmsystem2
 }
 
-unix {
-   CONFIG += link_pkgconfig
-   PKGCONFIG += gstreamer-0.10
-}
+#unix {
+#   CONFIG += link_pkgconfig
+#   PKGCONFIG += gstreamer-0.10
+#}
 
 # Add dependency to Symbian components
 # CONFIG += qt-components

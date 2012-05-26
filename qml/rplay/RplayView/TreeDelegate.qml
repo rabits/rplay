@@ -6,10 +6,15 @@ Rectangle {
     id: treeDelegate
 
     // private
-    property bool __active: current_file_array[model.level] === model.title
+    property bool active: current_file_array[model.level] === model.title
+    onActiveChanged: {
+        if( parent.parent.count !== index )
+            parent.parent.currentIndex = index + 1
+    }
+
 
     height: Math.max(imageSizeMin, info.height) + 8
-    color: "transparent"
+    color: "#22000000"
     anchors {
         left: parent.left
         right: parent.right
@@ -76,9 +81,16 @@ Rectangle {
 
         Rectangle {
             id: playPositionBox
-            visible: (model.type === 'file') && (parent.parent.__active)
+            visible: (model.type === 'file') && (parent.parent.active)
             height: type.height
-            color: "#222"
+
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.1; color: "#66000000" }
+                GradientStop { position: 0.9; color: "#66000000" }
+                GradientStop { position: 1.0; color: "transparent" }
+            }
+
             radius: 2.0
             anchors {
                 top: title.bottom
@@ -150,7 +162,7 @@ Rectangle {
 
             Timer {
                 interval: 200
-                running: (model.type === 'file') && (parent.parent.parent.__active)
+                running: (model.type === 'file') && (parent.parent.parent.active)
                 repeat: true
 
                 onTriggered: {
@@ -191,7 +203,7 @@ Rectangle {
 
     Rectangle {
         id: headerGlow
-        visible: parent.__active
+        visible: parent.active
         anchors.fill: parent
         gradient: Gradient {
             GradientStop { position: 0.0; color: "transparent" }

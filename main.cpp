@@ -9,7 +9,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("Rabits");
     QCoreApplication::setOrganizationDomain("rabits.ru");
     QCoreApplication::setApplicationName("rplay");
-    QCoreApplication::setApplicationVersion("0.2.0");
+    QCoreApplication::setApplicationVersion("1.0.0");
 
     QScopedPointer<QApplication> app(createApplication(argc, argv));
 
