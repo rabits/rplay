@@ -3,11 +3,34 @@ rPlay - Recursive Player
 
 *Simple filesystem player for MeeGo 1.2 Harmattan (Nokia N9)*
 
+## About
+
+*rPlay* - is simple audio player, designed for MeeGo 1.2: Harmattan.
+
+In first of all - rPlay is free software with open source. You can download source, compile, build and run it on your device without any payment.
+On the other hand - you can support the development of this and other my products bought in Nokia OVI Store the compiled package.
+
 This audio player I wrote for myself due to the fact that at N9 was absent my usual file player.
 It often happens that the tag does not fully reflect the order which you are accustomed to when listening. Moving music into folders much easier then prescribe tag manually. Also, today's players is strongly overloaded completely useless functions - the authors seem to forget, it's the player - not the food processor.
 All these thoughts, I took into account when developing their own audio player - it can just what is really needed and unneeded features can be disabled by settings to their uselessness is not reflected in the performance.
 
-Writed on QT4 with QtQuick interface in QtCreator
+## Usage
+
+1. Install rPlay on your device:
+ * Install it from [Nokia OVI Store](http://ovi.com/)
+ * Get sources, compile it, copy to device and install!)))
+2. Run rPlay from main dashboard
+3. Application contains three pages, every page contains header and list:
+ * *Settings* - left page, display settings and about
+ * + _Header_ - left scroll to change current page to _Tree_
+ * + _List_ - click on items to edit or scroll list up-down
+ * *Tree* - central page, displays folder tree of music library
+ * + _Header_ - click to go up in tree, scroll left-right to change page to _Song_ or _Settings_
+ * + _List_ - click to change folder or play song, scroll up-down to see other items
+ * *Song* - right page, displays current song tags and lyrics
+ * + _Header_ - click to change display priority: _Metadata_, _Extended Metadata_ or _Lyrics_, scroll right to change current page to _Tree_
+ * + _List_ - scroll up-down to see hided items
+4. Select song in Tree by tap - and it plays, tap again - it paused.
 
 ## Library notation example
 
