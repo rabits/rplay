@@ -42,7 +42,7 @@ All these thoughts I took into account while developing my own audio player - al
  - **[Year] Album**   - "[2005] The Spirit of Ukko", "[1994] Heartwork"...
  - **Number - Title** - "04 - Heartwork", "08 - Children Of Bodom"...
 
-## Supported features - basic functionality: v1.1
+## Supported features - basic functionality: v1.0
 
  * Simple minimalistic interface
  * Using filesystem (folders) for grouping music
