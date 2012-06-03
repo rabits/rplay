@@ -1,3 +1,9 @@
+rplay (1.0.1) unstable; urgency=low
+
+  * Fixed README
+
+ -- Rabit <home.rabits@gmail.com>  Sun, 03 Jun 2012 04:14:40 +0400
+
 rplay (1.0.0) unstable; urgency=low
 
   * Rewind to garniture button back
