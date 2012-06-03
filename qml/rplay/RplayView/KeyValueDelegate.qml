@@ -93,6 +93,10 @@ Rectangle {
         dialog_sprite.open();
     }
 
+    function setValueBool(bool) {
+        value.text = cplayer.setting(model.key, bool);
+    }
+
     MouseArea {
         id: mouseArea;
         anchors.fill: parent
@@ -109,6 +113,10 @@ Rectangle {
             case 'int':
                 break;
             case 'bool':
+                if (value.text == "true")
+                    setValueBool(false)
+                else
+                    setValueBool(true);
                 break;
             }
         }

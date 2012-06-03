@@ -113,7 +113,7 @@ Page {
     Connections {
         target: cplayer
 
-        onNext: {
+        onNextTrack: {
             if( (previousCurrentParent !== ctree.parentDir(cplayer.currentFile())) && (previousCurrentParent === sprite.dataPath) )
             {
                 previousCurrentParent = ctree.parentDir(cplayer.currentFile());

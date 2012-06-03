@@ -42,7 +42,7 @@ All these thoughts I took into account while developing my own audio player - al
  - **[Year] Album**   - "[2005] The Spirit of Ukko", "[1994] Heartwork"...
  - **Number - Title** - "04 - Heartwork", "08 - Children Of Bodom"...
 
-## Supported features - basic functionality: v1.0
+## Supported features - basic functionality: v1.1
 
  * Simple minimalistic interface
  * Using filesystem (folders) for grouping music
@@ -52,13 +52,29 @@ All these thoughts I took into account while developing my own audio player - al
  * Bluetooth garniture support (Play/Pause, Forward, Rewind)
  * Lyrics support (track.txt)
 
-## Planned features - additional functionality: v1.X => v2.0 
+## Supported features - additional functionality: v1.1
+
+ * Voice notification (current track Artist, Album, Title)
+
+## Planned features: v1.X => v2.0 
 
  * Lyrics automatic search
  * PulseAudio using for route signal to another system
  * Simple FS and tag editor
- * Voice notification (current track Artist, Album, Track or current Time)
  * Musical alarm - select random album and play it (possibility of return to the previous track playing before the alarm)
+
+## Voice engine
+
+I found and use flite to speech synthesis. Now it used for saying changed metadata (Artist, Album, Title).
+
+To use voice - compile flite 1.4 in scratchbox:
+1. Put precompiled libs into lib/flite/lib
+2. Put headers into lib/flite/include
+3. Clean & Rebuild project
+
+## Thanks
+
+Thank you, Carnegie Mellon University for Flite: Speech Synthesis engine
 
 ## Author
 

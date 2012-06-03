@@ -16,6 +16,9 @@
 #include "qmlapplicationviewer.h"
 
 #include "src/ctree.h"
+#ifdef USE_VOICE
+    #include "src/cvoice.h"
+#endif
 
 class CPlayer : public QObject
 {
@@ -30,6 +33,9 @@ private:
 
     QSettings   m_settings;
     CTree       m_tree;
+#ifdef USE_VOICE
+    CVoice      m_voice;
+#endif
 
 #if defined(MEEGO_EDITION_HARMATTAN)
     MeeGo::QmKeys* m_hwkeys;
@@ -53,7 +59,6 @@ public:
     Q_INVOKABLE inline QSettings* settings() { return &m_settings; }
     Q_INVOKABLE QVariant setting(QString key, QString value = "");
 
-    Q_INVOKABLE inline CTree* tree() { return &m_tree; }
     Q_INVOKABLE inline QStringList* musicFilters() { return &m_music_filters; }
     Q_INVOKABLE inline QStringList* coverFilters() { return &m_cover_filters; }
 
@@ -74,17 +79,24 @@ public:
 
     Q_INVOKABLE void play();
     Q_INVOKABLE void pause();
+
+    Q_INVOKABLE int  volume() { return m_player->volume(); }
+    Q_INVOKABLE void volume(int val) { m_player->setVolume(val); }
+
+    Q_INVOKABLE QString artist() { return m_player->metaData(QtMultimediaKit::AlbumArtist).toString(); }
+    Q_INVOKABLE QString album() { return m_player->metaData(QtMultimediaKit::AlbumTitle).toString(); }
+    Q_INVOKABLE QString title() { return m_player->metaData(QtMultimediaKit::Title).toString(); }
     
 signals:
     void metaDataChanged();
-    void next();
+    void newTrack();
+    void nextTrack();
     
 public slots:
     void statusChanged(QMediaPlayer::MediaStatus status);
 #if defined(MEEGO_EDITION_HARMATTAN)
     void hwKeyEvent(MeeGo::QmKeys::Key key, MeeGo::QmKeys::State state);
 #endif
-    
 };
 
 #endif // CPLAYER_H

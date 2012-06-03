@@ -1,3 +1,9 @@
+rplay (1.1.0) unstable; urgency=low
+
+  * Added voice notification of current track;
+
+ -- Rabit <home.rabits@gmail.com>  Sun, 03 Jun 2012 13:21:49 +0400
+
 rplay (1.0.1) unstable; urgency=low
 
   * Fixed README

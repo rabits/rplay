@@ -6,15 +6,28 @@ CPlayer::CPlayer(QObject *parent)
     : QObject(parent)
     , m_settings()
     , m_tree()
+#ifdef USE_VOICE
+    , m_voice()
+#endif
 #if defined(MEEGO_EDITION_HARMATTAN)
     , m_hwkeys()
 #endif
 {
+    qDebug("[rPlay] Init player");
     // Set default settings
     if( m_settings.value("preferences/music_library_path").isNull() )
         m_settings.setValue("preferences/music_library_path", QString(QDir::homePath()));
     if( m_settings.value("preferences/lyrics_extension").isNull() )
         m_settings.setValue("preferences/lyrics_extension", "txt");
+
+#ifdef USE_VOICE
+    if( m_settings.value("preferences/voice_say_on_meta_changed").isNull() )
+        m_settings.setValue("preferences/voice_say_on_meta_changed", true);
+    if( m_settings.value("preferences/voice_artist_album_say").isNull() )
+        m_settings.setValue("preferences/voice_artist_album_say", true);
+    if( m_settings.value("preferences/voice_title_say").isNull() )
+        m_settings.setValue("preferences/voice_title_say", false);
+#endif
 
     // Set filters for fs
     m_music_filters << "*.wav" << "*.mp2" << "*.mp3" << "*.mp4" << "*.ogg" << "*.flac" << "*.aac";
@@ -31,6 +44,12 @@ CPlayer::CPlayer(QObject *parent)
     m_player = new QMediaPlayer(this, QMediaPlayer::LowLatency);
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(statusChanged(QMediaPlayer::MediaStatus)));
     connect(m_player, SIGNAL(metaDataChanged()), this, SIGNAL(metaDataChanged()));
+
+#ifdef USE_VOICE
+    // Voice engine connection
+    if( setting("preferences/voice_say_on_meta_changed").toBool() == true )
+        connect(this, SIGNAL(metaDataChanged()), &m_voice, SLOT(sayCurrent()));
+#endif
 
     // Fulling metadata list
     m_metadata_list.insert(QtMultimediaKit::AlbumArtist, "Artist");
@@ -116,7 +135,10 @@ void CPlayer::initContext(QmlApplicationViewer& viewer)
     m_context = viewer.rootContext();
 
     m_context->setContextProperty("cplayer", this);
-    m_context->setContextProperty("ctree", tree());
+    m_context->setContextProperty("ctree", &m_tree);
+#ifdef USE_VOICE
+    m_context->setContextProperty("cvoice", &m_voice);
+#endif
     m_context->setContextProperty("current_file_array", currentFileArray());
 }
 
@@ -216,8 +238,20 @@ ListModel *CPlayer::prefsContent()
                                      , setting("preferences/music_library_path").toString()
                                      , "folder_path", this));
 
+#ifdef USE_VOICE
+    out->appendRow(new CKeyValueItem("preferences/voice_say_on_meta_changed", "Enable Voice"
+                                     , setting("preferences/voice_say_on_meta_changed").toString()
+                                     , "bool", this));
+    out->appendRow(new CKeyValueItem("preferences/voice_artist_album_say", "Voice say artist and album"
+                                     , setting("preferences/voice_artist_album_say").toString()
+                                     , "bool", this));
+    out->appendRow(new CKeyValueItem("preferences/voice_title_say", "Voice say title"
+                                     , setting("preferences/voice_title_say").toString()
+                                     , "bool", this));
+#endif
+
     QStringList about;
-    about << "Program: rPlay v1.0.0" << "Author:  Rabit <home.rabits@gmail.com>" << "Site:    https://github.com/rabits/rplay";
+    about << "Program: rPlay v"PROJECT_VERSION << "Author:  Rabit <home.rabits@gmail.com>" << "Site:    https://github.com/rabits/rplay";
 
     out->appendRow(new CKeyValueItem("", "About"
                                      , about.join("\n")
@@ -251,9 +285,9 @@ void CPlayer::playFile(QString path)
         setting("rplay/file", path);
         m_player->setMedia(QUrl::fromLocalFile(setting("preferences/music_library_path").toString() + setting("rplay/file").toString()));
         play();
+        emit newTrack();
 
-        qDebug("Playing file:");
-        qDebug(setting("rplay/file").toString().toStdString().c_str());
+        qDebug( QString("[rPlay] Playing file: ").append(setting("rplay/file").toString()).toStdString().c_str());
     }
     else
     {
@@ -269,7 +303,7 @@ void CPlayer::playFile(QString path)
 void CPlayer::playNext()
 {
     playFile(m_tree.findNextFile(setting("rplay/file").toString()));
-    emit next();
+    emit nextTrack();
 }
 
 void CPlayer::playRev()
