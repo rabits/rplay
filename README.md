@@ -68,6 +68,7 @@ All these thoughts I took into account while developing my own audio player - al
 I found and use flite to speech synthesis. Now it used for saying changed metadata (Artist, Album, Title).
 
 To use voice - compile flite 1.4 in scratchbox:
+
 1. Put precompiled libs into lib/flite/lib
 2. Put headers into lib/flite/include
 3. Clean & Rebuild project
