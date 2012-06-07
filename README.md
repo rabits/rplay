@@ -58,6 +58,8 @@ All these thoughts I took into account while developing my own audio player - al
 
 ## Planned features: v1.X => v2.0 
 
+ * Shuffle mode
+ * Dolby Headphone support
  * Lyrics automatic search
  * PulseAudio using for route signal to another system
  * Simple FS and tag editor
