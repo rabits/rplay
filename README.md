@@ -10,7 +10,7 @@ _All your issues can be discussed in [Issues Page](https://github.com/rabits/rpl
 *rPlay* - is simple audio player, designed for MeeGo 1.2: Harmattan.
 
 First of all - rPlay is free open source software. You can download the source, compile, build and run it on your device without any payment.
-On the other hand, you can support the development of this one and my other products by purchasing a prepared binary package in the Nokia Ovi Store.
+On the other hand, you can support the development of this one and my other products by purchasing a prepared binary package in the [Nokia Ovi Store](http://store.ovi.com/content/282268).
 
 I created this audio player for myself due to the fact that N9 didn’t contain usual file player. It often happens that the tag does not reflect completely the way of playing you got used to. Moving music into folders is much easier than manual tag prescribing. Also, nowadays players are overcharged heavily with useless functions - the authors seem to forget that it's the player - not the food processor.
 All these thoughts I took into account while developing my own audio player - all unneeded features can be easily disabled by settings so that their uselessness won’t influence the performance.
@@ -70,6 +70,7 @@ All these thoughts I took into account while developing my own audio player - al
 I found and use flite to speech synthesis. Now it used for saying changed metadata (Artist, Album, Title).
 
 To use voice - compile flite 1.4 in scratchbox:
+
 1. Put precompiled libs into lib/flite/lib
 2. Put headers into lib/flite/include
 3. Clean & Rebuild project
