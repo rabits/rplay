@@ -1,5 +1,5 @@
 # Version
-VERSION='1.1.0'
+VERSION='1.2.0'
 VERSTR='\\"$${VERSION}\\"'
 DEFINES += PROJECT_VERSION=\"$${VERSTR}\"
 
@@ -28,6 +28,8 @@ symbian {
     TARGET.CAPABILITY += NetworkServices
     CONFIG += qt-components
 }
+
+QT += network
 
 # Smart Installer package's UID
 # This UID is from the protected range and therefore the package will
@@ -59,7 +61,9 @@ SOURCES += main.cpp \
     src/listmodel.cpp \
     src/cplayer.cpp \
     src/model/ctreeitem.cpp \
-    src/model/ckeyvalueitem.cpp
+    src/model/ckeyvalueitem.cpp \
+    src/clyrics.cpp \
+    src/ccover.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -73,16 +77,23 @@ OTHER_FILES += \
     qtc_packaging/debian_harmattan/control \
     qtc_packaging/debian_harmattan/compat \
     qtc_packaging/debian_harmattan/changelog \
-    qml/rplay/MainPage.qml
+    qml/rplay/MainPage.qml \
+    i18n/tr_ru.ts \
+    i18n/tr_en.ts
 
 HEADERS += \
     src/ctree.h \
     src/listmodel.h \
     src/cplayer.h \
     src/model/ctreeitem.h \
-    src/model/ckeyvalueitem.h
+    src/model/ckeyvalueitem.h \
+    src/clyrics.h \
+    src/ccover.h
 
 contains(DEFINES, USE_VOICE) {
     HEADERS += src/cvoice.h
     SOURCES += src/cvoice.cpp
 }
+
+RESOURCES += \
+    resources.qrc

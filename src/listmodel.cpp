@@ -85,6 +85,27 @@ void ListModel::clear()
     m_list.clear();
 }
 
+Qt::ItemFlags ListModel::flags(const QModelIndex &index) const
+{
+    if( !index.isValid() )
+        return Qt::ItemIsEnabled;
+
+    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+}
+
+bool ListModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if( index.isValid() )
+    {
+        if( m_list.at(index.row())->data(role, value) )
+        {
+            emit dataChanged(index, index);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool ListModel::removeRow(int row, const QModelIndex &parent)
 {
     Q_UNUSED(parent);

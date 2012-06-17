@@ -6,12 +6,12 @@ import "RplayView"
 Page {
     id: mainPage
 
-    property variant component
     property variant sprite
 
     property string last_state: 'mainPage'
 
-    property string previousCurrentParent: ctree.parentDir(cplayer.currentFile())
+    property string previousSongFolder: ctree.parentDir(cplayer.currentFile())
+    property string currentSongFolder: ctree.parentDir(cplayer.currentFile())
 
     function switch_page(leftright) {
         if( leftright < 0 ) {
@@ -61,10 +61,10 @@ Page {
         }
     ]
 
-    /*SequentialAnimation {
-        id: toMainPage
-        NumberAnimation { property: "pos.x"; to: 0; duration: 100 }
-    }*/
+    Component {
+        id: component
+        RplayView {}
+    }
 
     Component {
         id: treeDelegate
@@ -72,21 +72,20 @@ Page {
     }
 
     function setFolder(mypath) {
-        if( sprite != null ) {
-            if( ! mypath )
-                mypath = ctree.parentDir(sprite.dataPath);
-            sprite.destroy();
-            component.destroy();
-        }
+        if( ! mypath )
+            mypath = ctree.parentDir(sprite.dataPath);
 
-        component = Qt.createComponent("RplayView/RplayView.qml");
+        if( sprite )
+            sprite.destroy(100);
+
         sprite = component.createObject(mainPage,
-                                        { dataPath: mypath
+                                        { dataPath: mypath === "" ? "/" : mypath
                                         , dataTitle: mypath === "" ? "Music Library" : ctree.getName(mypath)
                                         , dataType: 'folder'
-                                        , dataImage: ctree.findCover(mypath)
+                                        , dataImage: ccover.cover(mypath === "" ? "/" : mypath)
                                         , view_delegate: treeDelegate
-                                        , view_model: ctree.treeContent(mypath)
+                                        , view_model: ctree.treeContent(mypath === "" ? "/" : mypath)
+                                        , longPressUse: true
                                         });
         sprite.clicked.connect(setFolder);
         sprite.start();
@@ -114,11 +113,13 @@ Page {
         target: cplayer
 
         onNextTrack: {
-            if( (previousCurrentParent !== ctree.parentDir(cplayer.currentFile())) && (previousCurrentParent === sprite.dataPath) )
-            {
-                previousCurrentParent = ctree.parentDir(cplayer.currentFile());
-                setFolder(previousCurrentParent);
-            }
+            if( (previousSongFolder !== currentSongFolder) && (previousSongFolder === sprite.dataPath) )
+                setFolder(currentSongFolder);
+        }
+
+        onNewTrack: {
+            previousSongFolder = currentSongFolder;
+            currentSongFolder = ctree.parentDir(cplayer.currentFile());
         }
     }
 

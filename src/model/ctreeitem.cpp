@@ -41,6 +41,26 @@ QVariant CTreeItem::data(int role) const
     }
 }
 
+bool CTreeItem::data(int role, const QVariant &new_value)
+{
+    switch(role) {
+    case TitleRole:
+        title(new_value);
+    case PathRole:
+        path(new_value);
+    case TypeRole:
+        type(new_value);
+    case PictureRole:
+        picture(new_value);
+    case LevelRole:
+        level(new_value);
+    case InsideRole:
+        inside(new_value);
+    default:
+        return false;
+    }
+}
+
 QHash<int, QByteArray> CTreeItem::roleNames() const
 {
     QHash<int, QByteArray> names;

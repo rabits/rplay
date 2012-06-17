@@ -1,3 +1,24 @@
+rplay (1.2.0) unstable; urgency=low
+
+  * Added repeat and shuffle folder setting (long press on Tree header to set)
+  * Added shuffle and repeat mode setting
+  * Added notifers for search lyrics, cover and voice operations
+  * Search covers and lyrics in internet with worker notifications
+  * Added link for manual lyrics search in google
+  * Added lyrics editor with mini header mode for better editing
+  * Added play position view on SongPage and change current track position
+  * Added play/pause control to SongPage cover image
+  * Added not found on pages if no items present
+  * Added simple russian localization
+  * Added simple help in about item in settings
+  * Fixed simplicity of change page
+  * Fixed preferencens edition
+  * Fixed bug with change list current item by active song
+  * Fixed bug with change folder on main page (issue #1)
+  * Fixed bug with volume down if select new track and voice not done
+
+ -- Rabit <home.rabits@gmail.com>  Fri, 08 Jun 2012 10:55:43 +0400
+
 rplay (1.1.0) unstable; urgency=low
 
   * Added voice notification of current track;

@@ -19,8 +19,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     QmlApplicationViewer viewer;
 
-    CPlayer::getInstance()->initContext(viewer);
+    qDebug("[rPlay] Creating context");
+    CPlayer::getInstance()->initContext(viewer, &app);
 
+    qDebug("[rPlay] Loading qml");
     viewer.setMainQmlFile(QLatin1String("qml/rplay/main.qml"));
 
     CPlayer::getInstance()->initRoot(viewer);

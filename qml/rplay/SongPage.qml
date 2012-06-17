@@ -11,8 +11,27 @@ Page {
     Connections {
         target: cplayer
 
-        onMetaDataChanged: {
+        onMediaFullyLoaded: {
             update("");
+        }
+
+        onMetaDataChanged: {
+            if( cplayer.fullyLoaded() )
+                update("");
+        }
+    }
+    Connections {
+        target: clyrics
+
+        onLyricsChanged: {
+            update("");
+        }
+    }
+    Connections {
+        target: ccover
+
+        onCoverChanged: {
+            songView.dataImage = ccover.cover(ctree.parentDir(cplayer.currentFile()));
         }
     }
 
@@ -40,16 +59,26 @@ Page {
             songView.dataType = type;
         else {
             songView.dataTitle = ctree.getName(cplayer.currentFile());
-            songView.dataImage = ctree.findCover(ctree.parentDir(cplayer.currentFile()));
+            songView.dataImage = ccover.cover(ctree.parentDir(cplayer.currentFile()));
             songView.dataPath = cplayer.currentFile();
         }
 
+        if( (! clyrics.lyricsHas("") || cplayer.settingBool("preferences/network_get_lyrics_show_always"))
+                && ! cplayer.settingBool("preferences/network_get_lyrics_only_on_songlyrics") )
+            clyrics.lyricsNet(cplayer.artist(), cplayer.title());
+
         if( songView.dataType === "Metadata" ) {
             songView.view_model = cplayer.getMetaData();
+            songView.dataNoItemsMessage = "Not found metadata";
         } else if( songView.dataType === "Extended Metadata" ) {
             songView.view_model = cplayer.getExtendedMetaData();
+            songView.dataNoItemsMessage = "Not found extended metadata";
         } else {
-            songView.view_model = cplayer.getLyrics("");
+            if( (! clyrics.lyricsHas("") || cplayer.settingBool("preferences/network_get_lyrics_show_always"))
+                && cplayer.settingBool("preferences/network_get_lyrics_only_on_songlyrics") )
+                clyrics.lyricsNet(cplayer.artist(), cplayer.title());
+            songView.view_model = clyrics.lyrics("");
+            songView.dataNoItemsMessage = 'Not found lyrics for<br/>"' + songView.dataTitle + '"';
         }
     }
 
@@ -63,6 +92,8 @@ Page {
         dataTitle: "Song"
         dataType: "Metadata"
         dataImage: "images/album.png"
+        positionBoxUse: true
+        playPauseOnCoverUse: true
         view_delegate: keyvalueDelegate
         opacity: 1.0
         onClicked: {

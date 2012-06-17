@@ -352,5 +352,6 @@ Dialog {
           selectedFile = folderModel.folder
           fileSelector.accept()
       }
+      style: ButtonStyle { inverted: true }
   }
 }

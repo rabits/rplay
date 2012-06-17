@@ -1,6 +1,7 @@
 import ListModels 1.0
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import "components"
 
 Rectangle {
     id: treeDelegate
@@ -8,7 +9,8 @@ Rectangle {
     // private
     property bool active: current_file_array[model.level] === model.title
     onActiveChanged: {
-        if( parent.parent.count !== index )
+        // Move listview to next item
+        if( active && parent.parent.count !== index + 1 )
             parent.parent.currentIndex = index + 1
     }
 
@@ -79,97 +81,16 @@ Rectangle {
             color: "#444"
         }
 
-        Rectangle {
+        PlayPositionBox {
             id: playPositionBox
             visible: (model.type === 'file') && (parent.parent.active)
             height: type.height
-
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "transparent" }
-                GradientStop { position: 0.1; color: "#66000000" }
-                GradientStop { position: 0.9; color: "#66000000" }
-                GradientStop { position: 1.0; color: "transparent" }
-            }
-
-            radius: 2.0
             anchors {
                 top: title.bottom
                 left: type.right
                 right: parent.right
                 rightMargin: 10
                 leftMargin: 10
-            }
-
-            function two(x) {return ((x>9)?"":"0")+x}
-            function msec2time(msec) {
-                msec = Math.floor(msec / 1000)
-                var time = "00:00";
-
-                if( msec > 0 )
-                {
-                    time = two(msec % 60);
-
-                    msec = Math.floor(msec / 60)
-                    time = two(msec % 60) + ":" + time;
-
-                    msec = Math.floor(msec / 60)
-                    if( msec > 0 )
-                        time = (msec % 24) + ":" + time;
-                }
-
-                return time;
-            }
-
-            Label {
-                id: currentTime
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    left: parent.left
-                    leftMargin: 5
-                }
-                font.pixelSize: parent.height - 4
-                color: "#999"
-            }
-
-            Label {
-                id: durationTime
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    right: parent.right
-                    rightMargin: 5
-                }
-                font.pixelSize: parent.height - 4
-                color: "#999"
-            }
-
-            Rectangle {
-                id: playPosition
-                color: "transparent"
-                anchors {
-                    fill: parent
-                    rightMargin: parent.width
-                }
-
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 0.1; color: "transparent" }
-                    GradientStop { position: 0.42; color: colorGlow }
-                    GradientStop { position: 0.58; color: colorGlow }
-                    GradientStop { position: 0.9; color: "transparent" }
-                    GradientStop { position: 1.0; color: "transparent" }
-                }
-            }
-
-            Timer {
-                interval: 200
-                running: (model.type === 'file') && (parent.parent.parent.active)
-                repeat: true
-
-                onTriggered: {
-                    playPosition.anchors.rightMargin = parent.width - (parent.width * (cplayer.currentFilePosition() / cplayer.currentFileDuration()));
-                    currentTime.text = parent.msec2time(cplayer.currentFilePosition());
-                    durationTime.text = parent.msec2time(cplayer.currentFileDuration());
-                }
             }
         }
 
@@ -221,9 +142,10 @@ Rectangle {
 
         onClicked: {
             if( model.type !== 'file' ) {
-                mainPage.setFolder(model.path, rplay_view.dataPath)
+                mainPage.setFolder(model.path, rplay_view.dataPath);
             } else {
-                cplayer.playFile(model.path)
+                ctree.shuffleClearList();
+                cplayer.playFile(model.path);
             }
         }
     }

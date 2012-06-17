@@ -13,6 +13,18 @@ Page {
         KeyValueDelegate {}
     }
 
+    Connections {
+        target: cplayer
+
+        onSettingChanged: {
+            if( key === "preferences/repeat_shuffle_folder" )
+            {
+                prefsView.view_model.destroy();
+                prefsView.view_model = cplayer.prefsContent();
+            }
+        }
+    }
+
     RplayView {
         id: prefsView
         dataTitle: "Settings"

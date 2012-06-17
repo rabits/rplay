@@ -34,6 +34,27 @@ QVariant CKeyValueItem::data(int role) const
     }
 }
 
+bool CKeyValueItem::data(int role, const QVariant &new_value)
+{
+    switch(role) {
+    case KeyRole:
+        key(new_value);
+        break;
+    case TitleRole:
+        title(new_value);
+        break;
+    case ValueRole:
+        value(new_value);
+        break;
+    case TypeRole:
+        type(new_value);
+        break;
+    default:
+        return false;
+    }
+    return true;
+}
+
 QHash<int, QByteArray> CKeyValueItem::roleNames() const
 {
     QHash<int, QByteArray> names;

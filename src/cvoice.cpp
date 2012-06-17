@@ -1,29 +1,33 @@
 #include "cvoice.h"
 #include "src/cplayer.h"
 
-CVoiceThread::CVoiceThread(QObject *parent) :
-    QThread(parent)
+CVoice::CVoice(QObject *parent)
+    : QThread(parent)
 {
+    qDebug("[rPlay] Init voice engine");
+
     flite_init();
     m_voice = register_cmu_us_slt();
 }
 
-CVoice::CVoice(QObject *parent)
-    : QObject(parent)
-    , m_thread(this)
-{
-    qDebug("[rPlay] Init voice engine");
-}
-
 void CVoice::say(QString text)
 {
-    m_thread.setText(text);
-    m_thread.start();
+    if( ! m_mutex.tryLock() )
+    {
+        qDebug("[rPlay] Voice already working");
+        return;
+    }
+
+    working(true);
+
+    m_text = text;
+
+    start();
 }
 
 void CVoice::sayCurrent()
 {
-    if( CPlayer::getInstance()->setting("preferences/voice_say_on_meta_changed").toBool() != true )
+    if( CPlayer::getInstance()->settingBool("preferences/voice_say_on_meta_changed") != true )
         return;
 
     QString text;
@@ -31,7 +35,7 @@ void CVoice::sayCurrent()
 
     current = CPlayer::getInstance()->artist();
     current.append(". ").append(CPlayer::getInstance()->album());
-    if( (CPlayer::getInstance()->setting("preferences/voice_artist_album_say").toBool() == true) &&
+    if( (CPlayer::getInstance()->settingBool("preferences/voice_artist_album_say") == true) &&
             current.compare(". ") != 0 && current.compare(m_prev_artist_album, Qt::CaseInsensitive) != 0 )
     {
         m_prev_artist_album = current;
@@ -39,7 +43,7 @@ void CVoice::sayCurrent()
     }
 
     current = CPlayer::getInstance()->title();
-    if( (CPlayer::getInstance()->setting("preferences/voice_title_say").toBool() == true) &&
+    if( (CPlayer::getInstance()->settingBool("preferences/voice_title_say") == true) &&
             ! current.isEmpty() && current.compare(m_prev_title, Qt::CaseInsensitive) != 0 )
     {
         m_prev_title = current;
@@ -50,10 +54,13 @@ void CVoice::sayCurrent()
         say(text);
 }
 
-void CVoiceThread::run()
+void CVoice::run()
 {
     uint volume = CPlayer::getInstance()->volume();
     CPlayer::getInstance()->volume(50);
     flite_text_to_speech(m_text.toStdString().c_str(), m_voice, "play");
     CPlayer::getInstance()->volume(volume);
+
+    working(false);
+    m_mutex.unlock();
 }

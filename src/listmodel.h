@@ -20,6 +20,7 @@ public:
     virtual ~ListItem() {}
     virtual QString id() const = 0;
     virtual QVariant data(int role) const = 0;
+    virtual bool data(int role, const QVariant &new_value) = 0;
     virtual QHash<int, QByteArray> roleNames() const = 0;
 
 signals:
@@ -44,6 +45,11 @@ public:
     ListItem* find(const QString &id) const;
     QModelIndex indexFromItem( const ListItem* item) const;
     void clear();
+
+    Q_INVOKABLE void setData(int row, const QByteArray role, QVariant new_value) { setData(index(row), new_value, roleNames().key(role)); }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 private slots:
     void handleItemChange();
