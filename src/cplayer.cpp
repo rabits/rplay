@@ -46,7 +46,7 @@ CPlayer::CPlayer(QObject *parent)
     if( m_settings.value("preferences/network_get_lyrics_only_on_songlyrics").isNull() )
         m_settings.setValue("preferences/network_get_lyrics_only_on_songlyrics", true);
     if( m_settings.value("preferences/network_get_lyrics_autosave").isNull() )
-        m_settings.setValue("preferences/network_get_lyrics_autosave", true);
+        m_settings.setValue("preferences/network_get_lyrics_autosave", false);
 
     if( m_settings.value("preferences/network_get_covers").isNull() )
         m_settings.setValue("preferences/network_get_covers", true);

@@ -24,14 +24,19 @@ QString CLyrics::lyricName(QString path)
 void CLyrics::lyricSave(QString text)
 {
     QFile lyrics(lyricName(""));
-    if( ! lyrics.open(QFile::WriteOnly) )
-        qDebug("[rPlay] Error: unable to write lyric into file");
-    else
+    if( ! text.isEmpty() )
     {
-        lyrics.write(text.toUtf8());
-        lyrics.close();
-        qDebug("[rPlay] Lyric saved");
+        if( ! lyrics.open(QFile::WriteOnly) )
+            qDebug("[rPlay] Error: unable to write lyric into file");
+        else
+        {
+            lyrics.write(text.toUtf8());
+            lyrics.close();
+            qDebug("[rPlay] Lyric saved");
+        }
     }
+    else
+        lyrics.remove();
 }
 
 ListModel *CLyrics::lyrics(QString path)
@@ -39,27 +44,25 @@ ListModel *CLyrics::lyrics(QString path)
     path = lyricName(path);
     ListModel *out = new ListModel(new CKeyValueItem(), parent());
 
+    QUrl link("http://google.com/search");
+    link.addQueryItem("q", CPlayer::getInstance()->artist() + " " + CPlayer::getInstance()->title() + " lyrics");
+
     QFile lyrics(path);
 
     // If file less then 50Kb and readable
     if( (lyrics.size() < 50 * 1024) && lyrics.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
         QTextStream in(&lyrics);
-        out->appendRow(new CKeyValueItem(path, "Lyrics", in.readAll(), "lyric", this));
+        out->appendRow(new CKeyValueItem(path, "Lyrics <a href=\"" + QString(link.toEncoded()) + "\">try manual search</a>", in.readAll(), "lyric", this));
         lyrics.close();
     }
+    else
+        out->appendRow(new CKeyValueItem(path, "Lyrics (empty) <a href=\"" + QString(link.toEncoded()) + "\">try manual search</a>", "", "lyric", this));
 
     if( ! downloadedLyrics().isEmpty() && CPlayer::getInstance()->settingBool("preferences/network_get_lyrics_show_always") )
     {
         foreach( QString lyric, downloadedLyrics() )
             out->appendRow(new CKeyValueItem(path, "Lyrics (downloaded)", lyric, "lyric", this));
-    }
-
-    if( out->rowCount() == 0 )
-    {
-        QUrl link("http://google.com/search");
-        link.addQueryItem("q", CPlayer::getInstance()->artist() + " " + CPlayer::getInstance()->title() + " lyrics");
-        out->appendRow(new CKeyValueItem(path, "Lyrics (<a href=\"" + QString(link.toEncoded()) + "\">try manual search</a>)", "", "lyric", this));
     }
 
     return out;

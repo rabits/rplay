@@ -1,3 +1,11 @@
+rplay (1.2.1) unstable; urgency=low
+
+  * Remove lyrics if it empty
+  * Changed defaults
+  * Fixed bug with default empty config
+
+ -- Rabit <home.rabits@gmail.com>  Wed, 20 Jun 2012 02:48:14 +0400
+
 rplay (1.2.0) unstable; urgency=low
 
   * Added repeat and shuffle folder setting (long press on Tree header to set)

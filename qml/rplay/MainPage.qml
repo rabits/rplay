@@ -72,7 +72,7 @@ Page {
     }
 
     function setFolder(mypath) {
-        if( ! mypath )
+        if( mypath === "" )
             mypath = ctree.parentDir(sprite.dataPath);
 
         if( sprite )
@@ -93,7 +93,11 @@ Page {
 
     Component.onCompleted: {
         if( sprite == null ) {
-            setFolder(ctree.parentDir(cplayer.currentFile()))
+            var path = ctree.parentDir(cplayer.currentFile());
+            if( path === "" )
+                setFolder("/");
+            else
+                setFolder(path);
         }
     }
 
