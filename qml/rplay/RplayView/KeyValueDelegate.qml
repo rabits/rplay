@@ -9,7 +9,7 @@ Rectangle {
 
     property bool editModeOn: false
 
-    height: title.height + Math.max(viewValue.height, (sprite != null ? sprite.height : 0)) + 8
+    height: title.height + (editModeOn ? sprite.height : viewValue.height) + 8
     color: "transparent"
     anchors {
         left: parent.left
@@ -79,6 +79,7 @@ Rectangle {
     }
 
     property variant sprite
+    property bool useEditValueHeight: false
 
     Component {
         id: folderDialog

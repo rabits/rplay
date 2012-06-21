@@ -72,11 +72,16 @@ Page {
     }
 
     function setFolder(mypath) {
-        if( mypath === "" )
-            mypath = ctree.parentDir(sprite.dataPath);
 
         if( sprite )
+        {
+            if( ! mypath )
+                mypath = ctree.parentDir(sprite.dataPath);
             sprite.destroy(100);
+        }
+
+        if( ! mypath )
+            mypath = "/";
 
         sprite = component.createObject(mainPage,
                                         { dataPath: mypath === "" ? "/" : mypath

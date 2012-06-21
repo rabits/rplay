@@ -63,6 +63,7 @@ All these thoughts I took into account while developing my own audio player - al
 ## Planned features: v1.X => v2.0 
 
  * Dolby Headphone support
+ * Artist info (albums, wiki)
  * Way to upload lyrics into LyrDB.com
  * PulseAudio using for route signal to another system
  * Simple FS and tag editor
