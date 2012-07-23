@@ -43,7 +43,7 @@ Rectangle {
             leftMargin: 5
         }
         font.pixelSize: parent.height - 4
-        color: "#999"
+        color: Qt.lighter("#999", text_bright);
     }
 
     Label {
@@ -54,7 +54,7 @@ Rectangle {
             rightMargin: 5
         }
         font.pixelSize: parent.height - 4
-        color: "#999"
+        color: Qt.lighter("#999", text_bright);
     }
 
     Rectangle {

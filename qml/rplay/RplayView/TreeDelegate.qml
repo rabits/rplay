@@ -62,7 +62,7 @@ Rectangle {
                 pointSize: 16
             }
             text: model.title
-            color: "gray"
+            color: Qt.lighter("#777", text_bright);
             elide: Text.ElideRight
         }
 
@@ -78,7 +78,7 @@ Rectangle {
                 pointSize: 12
             }
             text: model.type
-            color: "#444"
+            color: Qt.lighter("#555", text_bright);
         }
 
         PlayPositionBox {
@@ -107,7 +107,7 @@ Rectangle {
                 pointSize: 12
             }
             text: model.inside
-            color: "#444"
+            color: Qt.lighter("#555", text_bright);
         }
     }
 

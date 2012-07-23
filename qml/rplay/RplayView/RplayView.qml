@@ -130,7 +130,7 @@ Rectangle {
                     pointSize: titleSize
                 }
                 text: dataTitle
-                color: "gray"
+                color: Qt.lighter("#777", text_bright);
                 elide: Text.ElideRight
             }
 
@@ -146,7 +146,7 @@ Rectangle {
                     pixelSize: 0
                     pointSize: 16
                 }
-                color: "#555"
+                color: Qt.lighter("#555", text_bright);
             }
 
             Label {
@@ -162,7 +162,7 @@ Rectangle {
                     pointSize: 16
                 }
                 text: list.count
-                color: "#555"
+                color: Qt.lighter("#555", text_bright);
             }
 
             Label {
@@ -178,7 +178,7 @@ Rectangle {
                     pointSize: 12
                 }
                 text: dataPath
-                color: "#777"
+                color: Qt.lighter("#777", text_bright);
                 maximumLineCount: 4
                 wrapMode: Text.WrapAnywhere
                 elide: Text.ElideRight

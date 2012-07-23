@@ -18,6 +18,17 @@ Rectangle {
         rightMargin: 5
     }
 
+    Component.onCompleted: {
+        if( model.type === "slider" )
+        {
+            sprite = compSlider.createObject(keyvalueDelegate
+                                            , { value: model.value });
+            editModeOn = true;
+            saveButton.visible = false;
+            cancelButton.visible = false;
+        }
+    }
+
     MouseArea {
         id: mouseArea;
         anchors.fill: parent
@@ -61,7 +72,7 @@ Rectangle {
                 pointSize: 14
             }
             text: model.title
-            color: "#888"
+            color: Qt.lighter("#888", text_bright);
             elide: Text.ElideRight
             onLinkActivated: Qt.openUrlExternally(link);
         }
@@ -93,6 +104,32 @@ Rectangle {
             onFocused: keyvalueDelegate.parent.parent.parent.parent.headerMini();
             onUnfocused: keyvalueDelegate.parent.parent.parent.parent.headerMaxi();
         }
+    }
+
+    Component {
+        id: compSlider
+        Slider {
+            anchors {
+                top: titleRect.bottom
+                left: parent.left
+                right: parent.right
+                leftMargin: 15
+            }
+            value: model.value
+            minimumValue: 0.0
+            maximumValue: 2.0
+            stepSize: 0.05
+            valueIndicatorVisible: true
+            onValueChanged: {
+                if( model.key === "preferences/text_bright" )
+                    setTextBright(value);
+            }
+        }
+    }
+
+    function setTextBright(value) {
+        text_bright = cplayer.setting(model.key, value);
+        ListView.view.model.setData(index, "value", text_bright);
     }
 
     function setValueFolder() {
@@ -187,7 +224,7 @@ Rectangle {
         }
         text: model.value
         wrapMode: Text.Wrap
-        color: "#999"
+        color: Qt.lighter("#999", text_bright);
         onLinkActivated: Qt.openUrlExternally(link);
     }
 

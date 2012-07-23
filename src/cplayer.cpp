@@ -51,6 +51,9 @@ CPlayer::CPlayer(QObject *parent)
     if( m_settings.value("preferences/network_get_covers").isNull() )
         m_settings.setValue("preferences/network_get_covers", true);
 
+    if( m_settings.value("preferences/text_bright").isNull() )
+        m_settings.setValue("preferences/text_bright", 1.0);
+
 #ifdef USE_VOICE
     if( m_settings.value("preferences/voice_say_on_meta_changed").isNull() )
         m_settings.setValue("preferences/voice_say_on_meta_changed", true);
@@ -190,7 +193,7 @@ void CPlayer::initContext(QmlApplicationViewer& viewer, QScopedPointer<QApplicat
 
 void CPlayer::changeLocale(QString locale)
 {
-    qDebug(("[rPlay] changing locale to " + locale).toStdString().c_str());
+    qDebug(("[rPlay] Changing locale to " + locale).toStdString().c_str());
     if( ! m_translator.load("tr_" + locale, ":/") )
     {
         m_translator.load("tr_en", ":/");
@@ -324,6 +327,10 @@ ListModel *CPlayer::prefsContent()
     out->appendRow(new CKeyValueItem("preferences/network_get_covers", tr("Download covers from lastfm and autosave it")
                                      , setting("preferences/network_get_covers").toString()
                                      , "bool", this));
+
+    out->appendRow(new CKeyValueItem("preferences/text_bright", tr("Text brightness factor")
+                                     , setting("preferences/text_bright").toString()
+                                     , "slider", this));
 
     QStringList about;
     about << tr("Program: rPlay v%1").arg(PROJECT_VERSION)

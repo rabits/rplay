@@ -181,7 +181,7 @@ Dialog {
 
       height: 1
 
-      color: "#4D4D4D"
+      color: Qt.lighter("#4d4d4d", text_bright);
     }
   }
 
@@ -255,7 +255,7 @@ Dialog {
 
         height: 1
 
-        color: "#4D4D4D"
+        color: Qt.lighter("#4d4d4d", text_bright);
       }
     }
 

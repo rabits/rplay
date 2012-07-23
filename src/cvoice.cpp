@@ -57,7 +57,7 @@ void CVoice::sayCurrent()
 void CVoice::run()
 {
     uint volume = CPlayer::getInstance()->volume();
-    CPlayer::getInstance()->volume(50);
+    CPlayer::getInstance()->volume(volume / 2);
     flite_text_to_speech(m_text.toStdString().c_str(), m_voice, "play");
     CPlayer::getInstance()->volume(volume);
 

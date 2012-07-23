@@ -33,7 +33,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: 0
             font.pointSize: 20
-            color: "#ddd"
+            color: Qt.lighter("#ddd", text_bright);
             text: titleText
         }
     }
@@ -65,7 +65,7 @@ Rectangle {
                 wrapMode: Text.WordWrap
                 font.pixelSize: 0
                 font.pointSize: 16
-                color: "#aaa"
+                color: Qt.lighter("#aaa", text_bright);
                 text: contentText
                 onLinkActivated: Qt.openUrlExternally(link);
             }

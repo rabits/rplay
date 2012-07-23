@@ -1,3 +1,10 @@
+rplay (1.2.3) unstable; urgency=low
+
+  * Fixed bug with voice music volume
+  * Created parameter Text bright for increase/decrease contrast (Thanx, Phil)
+
+ -- Rabit <home.rabits@gmail.com>  Mon, 23 Jul 2012 01:44:40 +0400
+
 rplay (1.2.2) unstable; urgency=low
 
   * Fixed bug with tree

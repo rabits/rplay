@@ -9,6 +9,8 @@ PageStackWindow {
 
     initialPage: mainPage
 
+    property string text_bright: cplayer.setting("preferences/text_bright")
+
     MainPage {
         id: mainPage
     }

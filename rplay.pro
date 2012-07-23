@@ -1,5 +1,5 @@
 # Version
-VERSION='1.2.0'
+VERSION='1.2.3'
 VERSTR='\\"$${VERSION}\\"'
 DEFINES += PROJECT_VERSION=\"$${VERSTR}\"
 

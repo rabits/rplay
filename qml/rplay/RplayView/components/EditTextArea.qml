@@ -29,11 +29,11 @@ Item {
             backgroundDisabled: "images/textedit-background-disabled.png"
             backgroundSelected: "images/textedit-background-selected.png"
             backgroundError: "images/textedit-background-error.png"
-            textColor: "#666"
+            textColor: Qt.lighter("#666", text_bright);
             paddingTop: 3
             paddingBottom: 3
             selectionColor: "#55ffffff"
-            selectedTextColor: "#888"
+            selectedTextColor: Qt.lighter("#888", text_bright);
         }
 
         onActiveFocusChanged: {
