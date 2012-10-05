@@ -8,8 +8,8 @@ Rectangle {
 
     gradient: Gradient {
         GradientStop { position: 0.0; color: "transparent" }
-        GradientStop { position: 0.1; color: "#66444444" }
-        GradientStop { position: 0.9; color: "#66aaaaaa" }
+        GradientStop { position: 0.1; color: program_style.playposStartColor }
+        GradientStop { position: 0.9; color: program_style.playposEndColor }
         GradientStop { position: 1.0; color: "transparent" }
     }
 
@@ -43,7 +43,7 @@ Rectangle {
             leftMargin: 5
         }
         font.pixelSize: parent.height - 4
-        color: Qt.lighter("#999", text_bright);
+        color: Qt.lighter(program_style.viewValueColor, text_bright);
     }
 
     Label {
@@ -54,7 +54,7 @@ Rectangle {
             rightMargin: 5
         }
         font.pixelSize: parent.height - 4
-        color: Qt.lighter("#999", text_bright);
+        color: Qt.lighter(program_style.viewValueColor, text_bright);
     }
 
     Rectangle {

@@ -11,6 +11,8 @@ Item {
     signal unfocused
     signal heightChanged
 
+    property TextAreaStyle default_style: TextAreaStyle {}
+
     height: editValue.height
 
     TextArea {
@@ -20,20 +22,20 @@ Item {
         textFormat: Text.PlainText
         font {
             pixelSize: 0
-            pointSize: 18
+            pointSize: 18 * text_size
             family: "Monospace"
         }
         wrapMode: Text.Wrap
         style: TextAreaStyle {
-            background: "images/textedit-background.png"
-            backgroundDisabled: "images/textedit-background-disabled.png"
-            backgroundSelected: "images/textedit-background-selected.png"
-            backgroundError: "images/textedit-background-error.png"
-            textColor: Qt.lighter("#666", text_bright);
+            background: program_style.inverted ? default_style.background : "images/textedit-background.png"
+            backgroundDisabled: program_style.inverted ? default_style.backgroundDisabled : "images/textedit-background-disabled.png"
+            backgroundSelected: program_style.inverted ? default_style.backgroundSelected : "images/textedit-background-selected.png"
+            backgroundError: program_style.inverted ? default_style.backgroundError : "images/textedit-background-error.png"
+            textColor: program_style.inverted ? default_style.textColor : Qt.lighter(program_style.viewValueColor, text_bright);
             paddingTop: 3
             paddingBottom: 3
-            selectionColor: "#55ffffff"
-            selectedTextColor: Qt.lighter("#888", text_bright);
+            selectionColor: program_style.inverted ? default_style.selectionColor : program_style.selectionColor
+            selectedTextColor: program_style.inverted ? default_style.selectedTextColor : Qt.lighter(program_style.titleColor, text_bright);
         }
 
         onActiveFocusChanged: {

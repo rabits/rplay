@@ -5,11 +5,13 @@ import com.nokia.extras 1.0
 
 PageStackWindow {
     id: appWindow
-    style: PageStackWindowStyle{ backgroundColor: "black" }
+    style: PageStackWindowStyle{ backgroundColor: program_style.backgroundColor }
 
     initialPage: mainPage
 
     property string text_bright: cplayer.setting("preferences/text_bright")
+    property string text_size: cplayer.setting("preferences/text_size")
+    property ProgramStyle program_style: ProgramStyle { inverted: cplayer.setting("preferences/style_inverse") }
 
     MainPage {
         id: mainPage

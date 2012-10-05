@@ -24,10 +24,10 @@ Rectangle {
     signal clicked
 
     property color  colorBackground: "transparent"
-    property color  colorGlow: "#55ffffff"
+    property color  colorGlow: program_style.noItemsColor
     property int    imageSizeMin: 50
     property int    imageSizeMax: 150
-    property int    titleSize: 16
+    property int    titleSize: 16 * text_size
 
     function start() {
         showAnimation.start()
@@ -47,9 +47,9 @@ Rectangle {
     }
 
     gradient: Gradient {
-        GradientStop { position: 0.0; color: "black" }
-        GradientStop { position: 0.98; color: "#050505" }
-        GradientStop { position: 1.0; color: "black" }
+        GradientStop { position: 0.0; color: program_style.backgroundColor }
+        GradientStop { position: 0.98; color: program_style.backgroundGradientColor }
+        GradientStop { position: 1.0; color: program_style.backgroundColor }
     }
 
     opacity: 0.0
@@ -63,7 +63,7 @@ Rectangle {
         width: 300
         height: 300
 
-        source: "images/rabit.png"
+        source: program_style.backgroundImage
 
         fillMode: Image.PreserveAspectFit
     }
@@ -130,7 +130,7 @@ Rectangle {
                     pointSize: titleSize
                 }
                 text: dataTitle
-                color: Qt.lighter("#777", text_bright);
+                color: Qt.lighter(program_style.titleColor, text_bright);
                 elide: Text.ElideRight
             }
 
@@ -144,9 +144,9 @@ Rectangle {
                 text: dataType
                 font {
                     pixelSize: 0
-                    pointSize: 16
+                    pointSize: 16 * text_size
                 }
-                color: Qt.lighter("#555", text_bright);
+                color: Qt.lighter(program_style.typeColor, text_bright);
             }
 
             Label {
@@ -159,10 +159,10 @@ Rectangle {
                 }
                 font {
                     pixelSize: 0
-                    pointSize: 16
+                    pointSize: 16 * text_size
                 }
                 text: list.count
-                color: Qt.lighter("#555", text_bright);
+                color: Qt.lighter(program_style.insideColor, text_bright);
             }
 
             Label {
@@ -175,10 +175,10 @@ Rectangle {
                 }
                 font {
                     pixelSize: 0
-                    pointSize: 12
+                    pointSize: 12 * text_size
                 }
                 text: dataPath
-                color: Qt.lighter("#777", text_bright);
+                color: Qt.lighter(program_style.pathColor, text_bright);
                 maximumLineCount: 4
                 wrapMode: Text.WrapAnywhere
                 elide: Text.ElideRight
@@ -383,7 +383,7 @@ Rectangle {
             }
             wrapMode: Text.WordWrap
             maximumLineCount: 4
-            color: "#55ffffff"
+            color: program_style.noItemsColor
         }
 
         ListView {
@@ -396,12 +396,73 @@ Rectangle {
                 flickableItem: parent
             }
         }
+        Item {
+            id: scroll
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: 60
+            opacity: 0.2
+
+            Rectangle {
+                width: parent.height
+                height: parent.width
+                anchors.centerIn: parent
+                rotation: 270
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 1.0; color: program_style.scrollColor }
+                }
+            }
+
+            MouseArea {
+                id: scrollMouse
+                anchors.fill: parent
+
+                onPressed: {
+                    parent.state = "visible";
+                }
+
+                onReleased: {
+                    parent.state = "";
+                    list.returnToBounds();
+                }
+
+                onMouseYChanged: {
+                    var pos = (list.contentHeight - list.height + 40) * mouseY / scroll.height;
+
+                    if( pos < 0 ) {
+                        list.contentY = 0;
+                        list.returnToBounds();
+                    } else if( pos > list.contentHeight - list.height ) {
+                        list.contentY = list.contentHeight - list.height;
+                        list.returnToBounds();
+                    } else
+                        list.contentY = pos;
+                }
+            }
+
+            states: [
+                State {
+                    name: "visible"
+                    PropertyChanges { target: scroll; opacity: 0.8; }
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    SequentialAnimation {
+                        NumberAnimation { properties: "opacity"; duration: 200 }
+                    }
+                }
+            ]
+        }
     }
 
     Rectangle {
         radius: 5.0
         anchors.fill: parent
-        color: "white"
+        color: program_style.foregroundColor
         opacity: 0.1
         visible: mouseArea.pressed
     }
@@ -409,7 +470,7 @@ Rectangle {
     Rectangle {
         id: border
         height: 1
-        color: "#444"
+        color: program_style.borderColor
         anchors {
             left: parent.left
             right: parent.right

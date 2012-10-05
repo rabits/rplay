@@ -16,7 +16,7 @@ Rectangle {
 
 
     height: Math.max(imageSizeMin, info.height) + 8
-    color: "#22000000"
+    color: program_style.titleRectColor
     anchors {
         left: parent.left
         right: parent.right
@@ -59,10 +59,10 @@ Rectangle {
             font {
                 weight: Font.Bold
                 pixelSize: 0
-                pointSize: 16
+                pointSize: 16 * text_size
             }
             text: model.title
-            color: Qt.lighter("#777", text_bright);
+            color: Qt.lighter(program_style.titleColor, text_bright);
             elide: Text.ElideRight
         }
 
@@ -75,10 +75,10 @@ Rectangle {
             }
             font {
                 pixelSize: 0
-                pointSize: 12
+                pointSize: 12 * text_size
             }
             text: model.type
-            color: Qt.lighter("#555", text_bright);
+            color: Qt.lighter(program_style.typeColor, text_bright);
         }
 
         PlayPositionBox {
@@ -104,17 +104,17 @@ Rectangle {
             }
             font {
                 pixelSize: 0
-                pointSize: 12
+                pointSize: 12 * text_size
             }
             text: model.inside
-            color: Qt.lighter("#555", text_bright);
+            color: Qt.lighter(program_style.insideColor, text_bright);
         }
     }
 
     Rectangle {
         id: border
         height: 1
-        color: "#444"
+        color: program_style.borderColor
         anchors {
             left: parent.left
             right: parent.right
@@ -153,7 +153,7 @@ Rectangle {
     Rectangle {
         radius: 5.0
         anchors.fill: parent
-        color: "white"
+        color: program_style.foregroundColor
         opacity: 0.1
         visible: mouseArea.pressed
     }

@@ -57,7 +57,7 @@ Rectangle {
     Rectangle {
         id: titleRect
         height: title.height
-        color: "#22ffffff"
+        color: program_style.titleRectColor
         anchors {
             top: parent.top
             left: parent.left
@@ -69,10 +69,10 @@ Rectangle {
             font {
                 weight: Font.Bold
                 pixelSize: 0
-                pointSize: 14
+                pointSize: 14 * text_size
             }
             text: model.title
-            color: Qt.lighter("#888", text_bright);
+            color: Qt.lighter(program_style.titleColor, text_bright);
             elide: Text.ElideRight
             onLinkActivated: Qt.openUrlExternally(link);
         }
@@ -81,7 +81,7 @@ Rectangle {
     Rectangle {
         id: border
         height: 1
-        color: "#444"
+        color: program_style.borderColor
         anchors {
             left: parent.left
             right: parent.right
@@ -116,20 +116,24 @@ Rectangle {
                 leftMargin: 15
             }
             value: model.value
-            minimumValue: 0.0
+            minimumValue: 0.05
             maximumValue: 2.0
             stepSize: 0.05
             valueIndicatorVisible: true
             onValueChanged: {
-                if( model.key === "preferences/text_bright" )
-                    setTextBright(value);
+                setValueInt(value);
             }
         }
     }
 
-    function setTextBright(value) {
-        text_bright = cplayer.setting(model.key, value);
-        ListView.view.model.setData(index, "value", text_bright);
+    function setValueInt(value) {
+        ListView.view.model.setData(index, "value", value);
+
+        // TODO: UGLY HACK
+        if( model.key === "preferences/text_bright" )
+            text_bright = cplayer.setting(model.key, value);
+        if( model.key === "preferences/text_size" )
+            text_size = cplayer.setting(model.key, value);
     }
 
     function setValueFolder() {
@@ -171,8 +175,12 @@ Rectangle {
         editModeOn = true;
     }
 
-    function setValueBool(bool) {
-        ListView.view.model.setData(index, "value", cplayer.setting(model.key, bool));
+    function setValueBool(value) {
+        ListView.view.model.setData(index, "value", cplayer.setting(model.key, value));
+
+        // TODO: UGLY HACK
+        if( model.key === "preferences/style_inverse" )
+            program_style.inverted = value;
     }
 
     Button {
@@ -219,19 +227,19 @@ Rectangle {
         }
         font {
             pixelSize: 0
-            pointSize: 18
+            pointSize: 18 * text_size
             family: "Monospace"
         }
         text: model.value
         wrapMode: Text.Wrap
-        color: Qt.lighter("#999", text_bright);
+        color: Qt.lighter(program_style.viewValueColor, text_bright);
         onLinkActivated: Qt.openUrlExternally(link);
     }
 
     Rectangle {
         radius: 5.0
         anchors.fill: parent
-        color: "white"
+        color: program_style.endListBorderColor
         opacity: 0.1
         visible: mouseArea.pressed
     }

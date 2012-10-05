@@ -54,6 +54,12 @@ CPlayer::CPlayer(QObject *parent)
     if( m_settings.value("preferences/text_bright").isNull() )
         m_settings.setValue("preferences/text_bright", 1.0);
 
+    if( m_settings.value("preferences/text_size").isNull() )
+        m_settings.setValue("preferences/text_size", 1.0);
+
+    if( m_settings.value("preferences/style_inverse").isNull() )
+        m_settings.setValue("preferences/style_inverse", false);
+
 #ifdef USE_VOICE
     if( m_settings.value("preferences/voice_say_on_meta_changed").isNull() )
         m_settings.setValue("preferences/voice_say_on_meta_changed", true);
@@ -331,6 +337,14 @@ ListModel *CPlayer::prefsContent()
     out->appendRow(new CKeyValueItem("preferences/text_bright", tr("Text brightness factor")
                                      , setting("preferences/text_bright").toString()
                                      , "slider", this));
+
+    out->appendRow(new CKeyValueItem("preferences/text_size", tr("Text size factor")
+                                     , setting("preferences/text_size").toString()
+                                     , "slider", this));
+
+    out->appendRow(new CKeyValueItem("preferences/style_inverse", tr("Invert style colors (black/white)")
+                                     , setting("preferences/style_inverse").toString()
+                                     , "bool", this));
 
     QStringList about;
     about << tr("Program: rPlay v%1").arg(PROJECT_VERSION)

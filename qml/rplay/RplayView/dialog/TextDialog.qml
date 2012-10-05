@@ -9,7 +9,7 @@ Rectangle {
     anchors.fill: parent
     visible: false
     opacity: 0.0
-    color: "#cc000000"
+    color: program_style.infoDialogColor
 
     function show() {
         state = "visible";
@@ -25,15 +25,15 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         height: titleData.height
-        color: "#22ffffff"
+        color: program_style.titleRectColor
         radius: 10
         Text {
             id: titleData
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: 0
-            font.pointSize: 20
-            color: Qt.lighter("#ddd", text_bright);
+            font.pointSize: 20 * text_size
+            color: Qt.lighter(program_style.titleDataColor, text_bright);
             text: titleText
         }
     }
@@ -51,7 +51,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 20
-        color: "#22ffffff"
+        color: program_style.titleRectColor
         radius: 10
         Flickable {
             flickableDirection: Flickable.VerticalFlick
@@ -64,8 +64,8 @@ Rectangle {
                 anchors.right: parent.right
                 wrapMode: Text.WordWrap
                 font.pixelSize: 0
-                font.pointSize: 16
-                color: Qt.lighter("#aaa", text_bright);
+                font.pointSize: 16 * text_size
+                color: Qt.lighter(program_style.contentDataColor, text_bright);
                 text: contentText
                 onLinkActivated: Qt.openUrlExternally(link);
             }

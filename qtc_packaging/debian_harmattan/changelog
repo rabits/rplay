@@ -1,3 +1,11 @@
+rplay (1.2.4) unstable; urgency=low
+
+  * Added fast scrollbar at right of list (like addressbook) (thanx, Lance)
+  * Added text size parameter (thanx, Lance)
+  * Added color style invertor parameter (thanx, Lance)
+
+ -- Rabit <home.rabits@gmail.com>  Fri, 05 Oct 2012 13:52:40 +0400
+
 rplay (1.2.3) unstable; urgency=low
 
   * Fixed bug with voice music volume
