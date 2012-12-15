@@ -60,6 +60,12 @@ CPlayer::CPlayer(QObject *parent)
     if( m_settings.value("preferences/style_inverse").isNull() )
         m_settings.setValue("preferences/style_inverse", false);
 
+    if( m_settings.value("preferences/on_minimize_goto_songpage").isNull() )
+        m_settings.setValue("preferences/on_minimize_goto_songpage", true);
+
+    if( m_settings.value("preferences/on_minimize_rotate_to_landscape").isNull() )
+        m_settings.setValue("preferences/on_minimize_rotate_to_landscape", true);
+
 #ifdef USE_VOICE
     if( m_settings.value("preferences/voice_say_on_meta_changed").isNull() )
         m_settings.setValue("preferences/voice_say_on_meta_changed", true);
@@ -344,6 +350,14 @@ ListModel *CPlayer::prefsContent()
 
     out->appendRow(new CKeyValueItem("preferences/style_inverse", tr("Invert style colors (black/white)")
                                      , setting("preferences/style_inverse").toString()
+                                     , "bool", this));
+
+    out->appendRow(new CKeyValueItem("preferences/on_minimize_goto_songpage", tr("On minimize go to song page")
+                                     , setting("preferences/on_minimize_goto_songpage").toString()
+                                     , "bool", this));
+
+    out->appendRow(new CKeyValueItem("preferences/on_minimize_rotate_to_landscape", tr("On minimize rotate to landscape")
+                                     , setting("preferences/on_minimize_rotate_to_landscape").toString()
                                      , "bool", this));
 
     QStringList about;

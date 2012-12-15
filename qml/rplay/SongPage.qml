@@ -39,17 +39,19 @@ Page {
         target: platformWindow
 
         onViewModeChanged: {
-            if( platformWindow.viewMode == WindowState.Fullsize ) {
-                songView.titleSize = 16
-                songView.rotation = 0
-                songView.anchors.fill = songPage
-            } else {
-                songView.titleSize = 30
-                songView.rotation = 90
-                songView.anchors.fill = null
-                songView.anchors.centerIn = songPage
-                songView.height = mainPage.width - 70
-                songView.width = mainPage.height
+            if( cplayer.settingBool("preferences/on_minimize_rotate_to_landscape") ) {
+                if( platformWindow.viewMode == WindowState.Fullsize ) {
+                    songView.titleSize = 16
+                    songView.rotation = 0
+                    songView.anchors.fill = songPage
+                } else {
+                    songView.titleSize = 30
+                    songView.rotation = 90
+                    songView.anchors.fill = null
+                    songView.anchors.centerIn = songPage
+                    songView.height = mainPage.width - 70
+                    songView.width = mainPage.height
+                }
             }
         }
     }

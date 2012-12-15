@@ -91,6 +91,7 @@ Page {
                                         , view_delegate: treeDelegate
                                         , view_model: ctree.treeContent(mypath === "" ? "/" : mypath)
                                         , longPressUse: true
+                                        , playPauseOnCoverUse: true
                                         });
         sprite.clicked.connect(setFolder);
         sprite.start();
@@ -110,10 +111,33 @@ Page {
         target: platformWindow
 
         onViewModeChanged: {
-            if( platformWindow.viewMode == WindowState.Fullsize ) {
-                mainPage.state = last_state
-            } else {
-                mainPage.state = 'songPage'
+            if( cplayer.settingBool("preferences/on_minimize_goto_songpage") ) {
+                if( platformWindow.viewMode == WindowState.Fullsize ) {
+                    mainPage.state = last_state
+                } else {
+                    mainPage.state = 'songPage'
+                }
+            }
+        }
+    }
+
+    Connections {
+        target: platformWindow
+
+        onViewModeChanged: {
+            if( cplayer.settingBool("preferences/on_minimize_rotate_to_landscape") ) {
+                if( platformWindow.viewMode == WindowState.Fullsize ) {
+                    sprite.titleSize = 16
+                    sprite.rotation = 0
+                    sprite.anchors.fill = mainPage
+                } else {
+                    sprite.titleSize = 30
+                    sprite.rotation = 90
+                    sprite.anchors.fill = null
+                    sprite.anchors.centerIn = mainPage
+                    sprite.height = mainPage.width - 70
+                    sprite.width = mainPage.height
+                }
             }
         }
     }

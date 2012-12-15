@@ -1,3 +1,12 @@
+rplay (1.2.5) unstable; urgency=low
+
+  * Added play-pause cover to Tree page
+  * More usability with change track position
+  * Option - go to song page on minimize
+  * Option - rotate screen on minimize
+
+ -- Rabit <home.rabits@gmail.com>  Sat, 15 Dec 2012 12:42:18 +0400
+
 rplay (1.2.4) unstable; urgency=low
 
   * Added fast scrollbar at right of list (like addressbook) (thanx, Lance)

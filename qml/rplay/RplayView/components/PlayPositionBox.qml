@@ -96,5 +96,9 @@ Rectangle {
             else
                 showBanner("Can't change position - please, play the file", "", "");
         }
+        onMouseXChanged: {
+            if( cplayer.currentFileDuration() > 0 )
+                cplayer.currentFilePosition(cplayer.currentFileDuration() / parent.width * mouseX);
+        }
     }
 }
